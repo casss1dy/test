@@ -2,6 +2,9 @@ const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 
+const autoprefixer = require('autoprefixer');
+const cssnano = require('cssnano');
+
 module.exports = {
   entry: './src/index.js',
   output: {
@@ -21,24 +24,10 @@ module.exports = {
           }
         ]
       },
-      {
-        test: /\.less$/,
-        use: [
-          {
-            loader: 'style-loader', // creates style nodes from JS strings
-          },
-          {
-            loader: 'css-loader', // translates CSS into CommonJS
-          },
-          {
-            loader: 'less-loader', // compiles Less to CSS
-          },
-        ],
-      },
-      {
-        test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader'],
-      },
+      // {
+      //   test: /\.css$/,
+      //   use: [MiniCssExtractPlugin.loader, 'css-loader'],
+      // },
       {
         test: /\.js$/,
         loader: 'babel-loader',
@@ -53,7 +42,39 @@ module.exports = {
               outputPath: 'img'
             }},
         ]
-      }
+      },
+      {
+        test: /\.s?css$/,
+        use: [
+          {
+            loader: require.resolve('style-loader')
+          },
+          {
+            loader: require.resolve('css-loader'),
+            options: {
+              sourceMap: true // it's a Boolean variable
+            }
+          },
+          {
+            loader: require.resolve('postcss-loader'),
+            options: {
+              plugins: [
+                autoprefixer(),
+                cssnano()
+              ]
+            }
+          },
+          {
+            loader: require.resolve('resolve-url-loader'),
+          },
+          {
+            loader: require.resolve('sass-loader'),
+            options: {
+              sourceMap: true
+            }
+          }
+        ]
+      },
     ]
   },
   plugins: [
