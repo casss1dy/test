@@ -5,16 +5,15 @@
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
   <title>Grid</title>
 </head>
 <body>
-  <main class="main">
-    <table class="product-table table table-hover">
+  <main class="content">
+    <div class="container">
+      <table class="product-table table table-hover">
       <tr>
         <th>ID</th>
         <th>Name</th>
@@ -40,9 +39,10 @@
         </td>
       </tr>
     </table>
+    </div>
   </main>
 
-  <div class="modal modal-edit modal-main">
+  <div class="modal modal-main">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -52,24 +52,24 @@
           </button>
         </div>
         <div class="modal-body">
-          <form action="">
+          <form action="" class="form">
             <div class="form-row">
               <div class="col-12">
                 <div class="form-group">
                   <input type="text" class="form-control" id="name" placeholder="Your name">
-                  <label class="error"></label>
+                  <label class="error-input"></label>
                 </div>
               </div>
               <div class="col-12">
                 <div class="form-group">
                   <input type="email" class="form-control" id="email" placeholder="Supplier email">
-                  <label class="error"></label>
+                  <label class="error-input"></label>
                 </div>
               </div>
               <div class="col-5">
                 <div class="form-group">
                   <input type="number" class="form-control" id="count" placeholder="Count">
-                  <label class="error"></label>
+                  <label class="error-input"></label>
                 </div>
               </div>
               <div class="col-7">
@@ -80,7 +80,7 @@
                     </div>
                     <input type="text" class="form-control" id="price" placeholder="Price">
                   </div>
-                  <label class="error"></label>
+                  <label class="error-input"></label>
                 </div>
               </div>
               <div class="col-12">
@@ -90,13 +90,13 @@
                     <option value="country">Country</option>
                     <option value="city">City</option>
                   </select>
-                  <label class="error"></label>
+                  <label class="error-input"></label>
                 </div>
               </div>
               <div class="col">
                 <div class="form-group mb-0">
-                  <fieldset>
-                    <legend>Country</legend>
+                  <fieldset class="form-fieldset">
+                    <legend class="form-legend">Country</legend>
                     <div class="custom-control custom-radio">
                       <input class="custom-control-input" type="radio" name="country" id="russia" value="russia" checked>
                       <label class="custom-control-label" for="russia"> Russia </label>
@@ -106,7 +106,7 @@
                       <label class="custom-control-label" for="holand"> Holand </label>
                     </div>
                   </fieldset>
-                  <label class="error"></label>
+                  <label class="error-input"></label>
                 </div>
               </div>
               <div class="col d-none">
@@ -119,7 +119,7 @@
                     <input class="form-check-input" type="checkbox" value="moscow" id="moscow">
                     <label class="form-check-label" for="moscow"> Moscow </label>
                   </div>
-                  <label class="error"></label>
+                  <label class="error-input"></label>
                 </div>
               </div>
             </div>

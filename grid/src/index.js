@@ -1,13 +1,33 @@
-import './style.css';
+import './style.scss';
 
-$(document).ready(function(){
+$(function(){
 
-  $('.btn-edit').on('click', toggleModal);
-  $('.modal-edit .close').on('click', toggleModal);
+  /**
+   * Model
+   */
+
+  function getProductList() {
+
+  }
+
+  /**
+   * Controller
+   */
 
   function toggleModal() {
     $('body').toggleClass('backdrop');
-    $('.modal-edit').fadeToggle();
+    $('.modal-main').fadeToggle();
   }
 
+  /**
+   * View
+   */
+
+  $('.btn-edit').on('click', toggleModal);
+  $('.modal-main .close').on('click', toggleModal);
+
 });
+
+fetch(`https://api-crud-mongo.herokuapp.com/api/v1/products`)
+  .then(response => {console.log(response.json())})
+  .catch();
