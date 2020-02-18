@@ -34,7 +34,7 @@ module.exports = {
         exclude: '/node_modules/'
       },
       {
-        test: /\.(jpg|png|svg|gif)$/,
+        test: /\.(jpg|png|svg|gif|ico)$/,
         use: [
           {
             loader: 'file-loader',
@@ -86,6 +86,11 @@ module.exports = {
       filename: '[name].css',
       chunkFilename: '[id].css',
     }),
+    new webpack.ProvidePlugin({
+      $: "jquery/dist/jquery.min.js",
+      jQuery: "jquery/dist/jquery.min.js",
+      "window.jQuery": "jquery/dist/jquery.min.js"
+    })
   ],
   devServer: {
     contentBase: path.join(__dirname, 'dist'),

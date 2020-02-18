@@ -1,0 +1,106 @@
+.content {
+  padding: 60px 0;
+}
+
+.backdrop {
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+
+// pages
+.page-loader {
+  animation-duration: 1.2s;
+  color: #5e9c6c;
+  left: calc(50% - 1.5rem);
+  position: absolute;
+  top: calc(50% - 1.5rem);
+  width: 3rem;
+  height: 3rem;
+  z-index: 10;
+}
+
+.page-loading {
+  opacity: 0.5;
+}
+
+.table-controls {
+
+}
+
+.table-products {
+
+  .product {
+    &:hover {
+      background-color: rgba(173, 191, 255, 0.1);
+      transition: 0.2s;
+    }
+
+    &-count {
+      background-color: #ffc107;
+      border-radius: 50%;
+      color: #fff;
+      display: inline-block;
+      font-size: 12px;
+      font-weight: bold;
+      padding: 3px 5px;
+    }
+
+    &-name {
+      color: #007bff;
+      cursor: pointer;
+      transition: 0.2s;
+
+      &:hover, &:active {
+        box-shadow: 0 1px 0 0 darken(#007bff, 15%);
+        color: darken(#007bff, 15%);
+      }
+    }
+  }
+}
+
+// form
+
+.form-fieldset {
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  padding: 10px;
+
+  .form-legend {
+    color: #898d98;
+    font-size: 1rem;
+    margin-bottom: 0;
+    padding: 0 5px;
+    width: auto;
+  }
+}
+
+.form-search {
+  .input-search {
+    border-radius: 4px 0 0 4px;
+    box-shadow: none;
+  }
+
+  .btn-search {
+    border-radius: 0 4px 4px 0;
+    padding: 7px 30px;
+  }
+}
+
+.error-input {
+  display: none;
+}
+
+// modal
+
+.modal-main {
+  background: rgba(0, 0, 0, 0.43);
+  display: none;
+  position: fixed;
+
+  .modal-footer {
+    justify-content: flex-start;
+    border: 0;
+    padding-top: 0;
+  }
+}
