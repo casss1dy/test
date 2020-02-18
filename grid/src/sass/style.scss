@@ -1,14 +1,6 @@
-.content {
-  padding: 60px 0;
-}
+@import "variables";
 
-.backdrop {
-  overflow: hidden;
-  height: 100vh;
-  width: 100vw;
-}
-
-// pages
+// page
 .page-loader {
   animation-duration: 1.2s;
   color: #5e9c6c;
@@ -24,8 +16,9 @@
   opacity: 0.5;
 }
 
+// table
 .table-controls {
-
+  margin-top: 60px;
 }
 
 .table-products {
@@ -34,6 +27,10 @@
     &:hover {
       background-color: rgba(173, 191, 255, 0.1);
       transition: 0.2s;
+    }
+
+    td:first-child {
+      text-align: right;
     }
 
     &-count {
@@ -47,19 +44,19 @@
     }
 
     &-name {
-      color: #007bff;
+      color: $cLinkMain;
       cursor: pointer;
       transition: 0.2s;
 
       &:hover, &:active {
-        box-shadow: 0 1px 0 0 darken(#007bff, 15%);
-        color: darken(#007bff, 15%);
+        box-shadow: 0 1px 0 0 $cLinkMainHover;
+        color: $cLinkMainHover;
       }
     }
   }
 }
 
-// form
+// forms
 
 .form-fieldset {
   border: 1px solid #ced4da;
@@ -87,11 +84,7 @@
   }
 }
 
-.error-input {
-  display: none;
-}
-
-// modal
+// modals
 
 .modal-main {
   background: rgba(0, 0, 0, 0.43);
@@ -103,4 +96,11 @@
     border: 0;
     padding-top: 0;
   }
+}
+
+// удалить
+.backdrop {
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
 }
