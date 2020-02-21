@@ -2,9 +2,9 @@ import $ from "jquery";
 
 export const view = {};
 
-const dom = {
+const $dom = {
   table: $('#tableProducts'),
-  loader: $('#pageLoader'),
+  spinner: $('#pageLoader'),
   product: {
     item: $('.product'),
     name: $('.product-name'),
@@ -32,40 +32,76 @@ const template = {
         <th>Supplier email</th>
         <td>#EMAIL#</td>
     </tr>`,
+  alert:
+    `<div class="alert alert-#TYPE# alert-main alert-dismissible fade show" role="alert">
+        <strong>#TITLE# #TEXT# </strong><br>
+        Pls try again later
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+    </div>`,
 };
 
-view.removeSpinner = function() {
-  dom.loader.remove();
-  $('body').removeClass('page-loading'); // заменить на стили бутстрап
+
+const spinner = {
+  detached: null,
+  class: '#pageLoader',
 };
+
+view.toggleSpinner = function(isToggleBackdrop = true) {
+  if (isToggleBackdrop) toggleBackdrop();
+
+  if (spinner.detached) {
+    spinner.detached.first().appendTo("body");
+    spinner.detached = null;
+  } else {
+    spinner.detached = $(spinner.class).detach();
+  }
+};
+
+view.toggleModal = function(modal) {
+  // view.toggleBackdrop();
+  $(modal).toggleClass('show');  // todo add data-dismiss
+};
+
+
+// todo rewrite to class ?
+view.Alert = function(alert) {
+  this.fragment = createHTMLFragment(Array(alert), 'alert');
+  console.log(this.fragment);
+};
+
+view.Alert.prototype.show = function () {
+  $(this.fragment).appendTo('body');
+};
+
+
+const backdrop = {
+  detached: null,
+  class: '.modal-backdrop',
+};
+
+function toggleBackdrop() {
+  $('body').toggleClass('modal-open');
+
+  if (backdrop.detached) {
+    backdrop.detached.first().appendTo("body");
+    backdrop.detached = null;
+  } else {
+    backdrop.detached = $(backdrop.class).detach();
+  }
+}
 
 view.render = function(productList, template, place) {
 
   let fragment = createHTMLFragment(productList, template);
-  let placeToAppend = dom[place];
+  let placeToAppend = $dom[place];
 
-  // switch (place) {
-  //   case 'table':
-  //     placeToAppend = placeToAppend.children('tbody');
-  //     break;
-  //   case 'modalView':
-  //     placeToAppend = placeToAppend.children('tbody');
-  //     break;
-  // }
-
-  dom[place].find('tbody').append(fragment);
-};
-
-view.toggleModal = function(type) {
-  $('body').toggleClass('backdrop');
-  $(`#${type}-product`).fadeToggle();
+  $dom[place].find('tbody').append(fragment);
 };
 
 view.getProductId = function(target) {
   return $(target).parents('.product').attr('id');
-};
-
-view.setTableListener = function() {
 };
 
 function createHTMLFragment(objList, templateName) {

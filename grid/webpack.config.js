@@ -86,11 +86,6 @@ module.exports = {
       filename: '[name].css',
       chunkFilename: '[id].css',
     }),
-    new webpack.ProvidePlugin({
-      $: "jquery/dist/jquery.min.js",
-      jQuery: "jquery/dist/jquery.min.js",
-      "window.jQuery": "jquery/dist/jquery.min.js"
-    })
   ],
   devServer: {
     contentBase: path.join(__dirname, 'dist'),

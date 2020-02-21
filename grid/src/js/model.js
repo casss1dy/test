@@ -1,5 +1,8 @@
+import $ from "jquery";
+
 export const model = {};
 
+// ? параметр action = add/update/delete => строка
 function getEndpointURL(action = 'get', productId = null) {
   let url = 'https://api-crud-mongo.herokuapp.com/api/v1/products';
 
@@ -22,26 +25,9 @@ function getEndpointURL(action = 'get', productId = null) {
 }
 
 model.getProductList = async function(productId = null) {
-  const endpointURL = getEndpointURL('get', productId);
-  const response = {};
-
-  try {
-    await $.ajax({
-      dataType: 'json',
-      url: endpointURL,
-      success: function (data) {
-        response.data = data.Data;
-      },
-      complete: function(jqXHR) {
-        response.statusCode = jqXHR.status;
-        response.statusText = jqXHR.statusText;
-      },
-    });
-  } catch(e) {
-    console.log(e);
-    return response;
-  }
-
-  return response;
+  return $.ajax({
+    dataType: 'json',
+    url: getEndpointURL('get', productId),
+  });
 };
 
