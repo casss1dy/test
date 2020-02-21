@@ -4,6 +4,7 @@ export const model = {};
 
 // ? параметр action = add/update/delete => строка
 function getEndpointURL(action = 'get', productId = null) {
+  
   let url = 'https://api-crud-mongo.herokuapp.com/api/v1/products';
 
   switch (action) {
@@ -25,6 +26,8 @@ function getEndpointURL(action = 'get', productId = null) {
 }
 
 model.getProductList = async function(productId = null) {
+  // getProductList returns product list OR product by id
+  // your method should always do exactly what their name claims they do. It's the law! It's critically important
   return $.ajax({
     dataType: 'json',
     url: getEndpointURL('get', productId),
