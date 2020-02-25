@@ -27,7 +27,7 @@
           </div>
 
           <div class="col-auto">
-            <button type="button" class="btn btn-success btn-add">Add</button>
+            <button type="button" class="btn btn-success btn-add" id="addProduct" data-modal="add">Add</button>
           </div>
 
         </div>
@@ -141,7 +141,7 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Are you sure?</h5>
+          <h5 class="modal-title">Confirm delete</h5>
           <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -151,12 +151,13 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-light btn-close" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-danger" id="deleteProduct">Delete</button>
+          <button type="button" class="btn btn-danger" id="deleteProduct" data-product="">Delete</button>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- todo используется ли data-action? -->
   <div class="modal modal-main" id="view" data-action="view">
     <div class="modal-dialog" role="document">
       <div class="modal-content">

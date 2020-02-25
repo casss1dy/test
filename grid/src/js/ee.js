@@ -3,7 +3,7 @@ import ee from "event-emitter";
 
 export const eventEmitter = ee();
 
-// Q - как правильно разделить
+// Q - как правильно разделить, выносить только eventEmitter.emit?
 
 export function modalOpen(e) {
   let modalId = $(e.target).data('modal');
@@ -11,20 +11,21 @@ export function modalOpen(e) {
 
   eventEmitter.emit('modalOpen', {
     modalId: modalId,
-    productId: this.id,
+    productId: this.id || null,
   });
 }
 
 export function modalClose() {
   let dismiss = $(this).data('dismiss');
   eventEmitter.emit('modalClose', {
-    $modal: $(this).closest('.' + dismiss),
+    modal: $(this).closest('.' + dismiss).data('action'),
   });
 }
 
-export function deleteProduct() {
+export function deleteProduct(e) {
+  console.log(this.dataset.product);
   eventEmitter.emit('deleteProduct', {
-    productId: this.id,
+    productId: this.dataset.product,
   });
 }
 

@@ -1,23 +1,24 @@
 import $ from "jquery";
+import * as template from './template_strings';
 
-
-// вынести в отд файл конфигурации?
+// Q - вынести в отд файл конфигурации?
 const $dom = {
   table: $('#tableProducts'),
   spinner: $('#spinnerLoader'),
   backdrop: $('#pageBackdrop'),
   closeBtn: $('.btn-close'),
   product: {
-    item: $('.product'),
-    name: $('.product-name'),
+    // item: $('.product'),
+    // name: $('.product-name'),
     deleteBtn: $('#deleteProduct'),
+    addBtn: $('#addProduct'),
   },
-  modalView: $('#view'),
+  modal: {
+    view: $('#view'),
+    delete: $('#delete'),
+    edit: $('#edit'),
+  }
 };
-
-export const view = {};
-
-import * as template from './template_strings';
 
 // spinner => backdrop light => modal => backdrop dark
 export function toggleSpinner(isToggleBackdrop = true) {
@@ -26,9 +27,9 @@ export function toggleSpinner(isToggleBackdrop = true) {
   $dom.spinner.toggleClass('d-none');
 }
 
-export function toggleModal(modal, isToggleBackdrop = false) {
+export function toggleModal(type, isToggleBackdrop = false) {
   if (isToggleBackdrop) toggleBackdrop();
-  $(modal).toggleClass('show');
+  $dom.modal[type].toggleClass('show');
 }
 
 function toggleBackdrop() {
@@ -48,16 +49,19 @@ export class Alert {
 
 export function renderTable(data) {
   let fragment = createHTMLFragment(data, 'tableRow');
-  // let placeToAppend = $dom[place];
   $dom.table.append(fragment);
 }
 
-export function renderProductView(data) {
+export function renderModalView(data) {
   let arrData = Array.isArray(data) ? data : [data];
   let fragment = createHTMLFragment(arrData, 'productView');
 
-  $dom.modalView.find('.product-name').text(data.name);
-  $dom.modalView.find('.product-info').html(fragment);
+  $dom.modal.view.find('.product-name').text(data.name);
+  $dom.modal.view.find('.product-info').html(fragment);
+}
+
+export function renderModalDelete(productId) {
+  $dom.product.deleteBtn.attr('data-product', productId);
 }
 
 function createHTMLFragment(arrData, templateName) {
@@ -69,6 +73,7 @@ function createHTMLFragment(arrData, templateName) {
 import {modalClose, modalOpen, deleteProduct} from './ee';
 
 $dom.table.on('click', '.product', modalOpen);
+$dom.product.addBtn.on('click', modalOpen);
 $dom.closeBtn.on('click', modalClose);
 $dom.product.deleteBtn.on('click', deleteProduct);
 // Q - на добавленные элементы
