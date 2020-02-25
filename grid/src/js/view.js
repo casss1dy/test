@@ -1,122 +1,75 @@
 import $ from "jquery";
 
-export const view = {};
 
+// вынести в отд файл конфигурации?
 const $dom = {
   table: $('#tableProducts'),
-  spinner: $('#pageLoader'),
+  spinner: $('#spinnerLoader'),
+  backdrop: $('#pageBackdrop'),
+  closeBtn: $('.btn-close'),
   product: {
     item: $('.product'),
     name: $('.product-name'),
+    deleteBtn: $('#deleteProduct'),
   },
-  modalView: $('#view-product'),
+  modalView: $('#view'),
 };
 
-const template = {
-  tableRow:
-    `<tr id="#ID#" class="product">
-          <td><span class="badge badge-warning">#COUNT#</span></td>
-          <td><span class="product-name" data-modal="view">#NAME#</span></td>
-          <td>$ #PRICE#</td>
-          <td>
-            <button type="button" class="btn btn-outline-success" data-modal="edit">Edit</button>
-            <button type="button" class="btn btn-outline-danger btn-delete" data-modal="delete">Delete</button>
-          </td>
-      </tr>`,
-  productView:
-    `<tr>
-        <th>Name</th>
-        <td>#NAME#</td>
-    </tr>
-    <tr>
-        <th>Supplier email</th>
-        <td>#EMAIL#</td>
-    </tr>`,
-  alert:
-    `<div class="alert alert-#TYPE# alert-main alert-dismissible fade show" role="alert">
-        <strong>#TITLE# #TEXT# </strong><br>
-        Pls try again later
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-    </div>`,
-};
+export const view = {};
 
+import * as template from './template_strings';
 
-const spinner = {
-  detached: null,
-  class: '#pageLoader',
-};
-
-view.toggleSpinner = function(isToggleBackdrop = true) {
+// spinner => backdrop light => modal => backdrop dark
+export function toggleSpinner(isToggleBackdrop = true) {
   if (isToggleBackdrop) toggleBackdrop();
+  $dom.backdrop.toggleClass('backdrop-light');
+  $dom.spinner.toggleClass('d-none');
+}
 
-  if (spinner.detached) {
-    spinner.detached.first().appendTo("body");
-    spinner.detached = null;
-  } else {
-    spinner.detached = $(spinner.class).detach();
-  }
-};
-
-view.toggleModal = function(modal) {
-  // view.toggleBackdrop();
-  $(modal).toggleClass('show');  // todo add data-dismiss
-};
-
-
-// todo rewrite to class ?
-view.Alert = function(alert) {
-  this.fragment = createHTMLFragment(Array(alert), 'alert');
-  console.log(this.fragment);
-};
-
-view.Alert.prototype.show = function () {
-  $(this.fragment).appendTo('body');
-};
-
-
-const backdrop = {
-  detached: null,
-  class: '.modal-backdrop',
-};
+export function toggleModal(modal, isToggleBackdrop = false) {
+  if (isToggleBackdrop) toggleBackdrop();
+  $(modal).toggleClass('show');
+}
 
 function toggleBackdrop() {
   $('body').toggleClass('modal-open');
+  $dom.backdrop.toggleClass('d-none');
+}
 
-  if (backdrop.detached) {
-    backdrop.detached.first().appendTo("body");
-    backdrop.detached = null;
-  } else {
-    backdrop.detached = $(backdrop.class).detach();
+export class Alert {
+  constructor(alert) {
+    this.fragment = createHTMLFragment([alert], 'alert');
+  }
+
+  show() {
+    $(this.fragment).appendTo('body');
   }
 }
 
-view.render = function(productList, template, place) {
-
-  let fragment = createHTMLFragment(productList, template);
-  let placeToAppend = $dom[place];
-
-  $dom[place].find('tbody').append(fragment);
-};
-
-view.getProductId = function(target) {
-  return $(target).parents('.product').attr('id');
-};
-
-function createHTMLFragment(objList, templateName) {
-  console.log('data', objList);
-  console.log('data', templateName);
-
-  let htmlFragment = '';
-
-  objList.forEach((obj) => {
-    htmlFragment += template[templateName];
-    Object.keys(obj).forEach((prop) => {
-      htmlFragment = htmlFragment.replace(`#${prop.toUpperCase()}#`, obj[prop]);
-    });
-  });
-
-  return htmlFragment;
+export function renderTable(data) {
+  let fragment = createHTMLFragment(data, 'tableRow');
+  // let placeToAppend = $dom[place];
+  $dom.table.append(fragment);
 }
+
+export function renderProductView(data) {
+  let arrData = Array.isArray(data) ? data : [data];
+  let fragment = createHTMLFragment(arrData, 'productView');
+
+  $dom.modalView.find('.product-name').text(data.name);
+  $dom.modalView.find('.product-info').html(fragment);
+}
+
+function createHTMLFragment(arrData, templateName) {
+  let htmlTemplate = template[templateName];
+  return arrData.reduce((htmlFragment, obj) => htmlFragment + htmlTemplate(obj), '');
+}
+
+// events
+import {modalClose, modalOpen, deleteProduct} from './ee';
+
+$dom.table.on('click', '.product', modalOpen);
+$dom.closeBtn.on('click', modalClose);
+$dom.product.deleteBtn.on('click', deleteProduct);
+// Q - на добавленные элементы
 

@@ -1,6 +1,7 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const autoprefixer = require('autoprefixer');
 const cssnano = require('cssnano');
@@ -24,10 +25,10 @@ module.exports = {
           }
         ]
       },
-      // {
-      //   test: /\.css$/,
-      //   use: [MiniCssExtractPlugin.loader, 'css-loader'],
-      // },
+      {
+        test: /\.css$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader'],
+      },
       {
         test: /\.js$/,
         loader: 'babel-loader',
@@ -39,8 +40,15 @@ module.exports = {
           {
             loader: 'file-loader',
             options: {
-              outputPath: 'img'
-            }},
+              // name: 'img/[name].[ext]',
+              // outputPath: 'img'
+
+              name: '[name].[ext]',
+              publicPath: 'img',
+              outputPath: 'img',
+              useRelativePath: true
+            }
+          },
         ]
       },
       {
@@ -86,6 +94,10 @@ module.exports = {
       filename: '[name].css',
       chunkFilename: '[id].css',
     }),
+    new CopyWebpackPlugin([
+      {from: './src/img', to: './img/'},
+      // { from: PATHS.src + '/static' },
+    ]),
   ],
   devServer: {
     contentBase: path.join(__dirname, 'dist'),

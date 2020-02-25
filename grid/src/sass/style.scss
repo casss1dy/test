@@ -1,15 +1,31 @@
 @import "variables";
 
+//general
+a {
+  color: $cLinkMain;
+  transition: 0.2s;
+  text-decoration: none;
+
+  &:hover, &:active {
+    box-shadow: 0 1px 0 0 $cLinkMainHover;
+    color: $cLinkMainHover;
+    text-decoration: none;
+  }
+}
+
 // page
-.page-loader {
-  animation-duration: 1.2s;
-  color: $cSpinner;
-  left: calc(50% - 1.5rem);
-  position: absolute;
-  top: calc(50% - 1.5rem);
-  width: 3rem;
-  height: 3rem;
-  z-index: 1400;
+.spinner-loader {
+  position: fixed;
+  left: calc(50% - 90px);
+  top: 50%;
+  width: 180px;
+  text-align: center;
+
+  .spinner-grow {
+    animation-duration: 1s;
+    color: $cSpinner;
+    margin: 0 10px;
+  }
 }
 
 .page-loading {
@@ -44,14 +60,8 @@
     }
 
     &-name {
-      color: $cLinkMain;
+      @extend a;
       cursor: pointer;
-      transition: 0.2s;
-
-      &:hover, &:active {
-        box-shadow: 0 1px 0 0 $cLinkMainHover;
-        color: $cLinkMainHover;
-      }
     }
   }
 }
@@ -104,8 +114,11 @@
 }
 
 .modal-backdrop {
-  background-color: $cBackdrop;
-  opacity: 0.8;
+  opacity: 0.5;
+
+  &.backdrop-light {
+    background-color: $cBackdrop;
+  }
 }
 
 // alerts
