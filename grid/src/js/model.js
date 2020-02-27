@@ -9,8 +9,21 @@ function getEndpointURL(action = 'get', productId = null) {
   return url;
 }
 
+export function getProductList() {
+  return getPromise();
+}
+
+export function getProductById(productId) {
+  return getPromise(productId);
+}
+
+export function deleteProduct(productId) {
+  return getPromise(productId, 'delete');
+}
+
+
 export function getPromise (productId = null, action = 'get') {
-  // TODO see about function name
+  // TODO see about function name, transfer getEndpointURL func
   let type;
   if (action === 'update') type = 'PUT';
   else if (action === 'add') type = 'POST';

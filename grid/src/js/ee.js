@@ -3,7 +3,11 @@ import ee from "event-emitter";
 
 export const eventEmitter = ee();
 
-// Q - как правильно разделить, выносить только eventEmitter.emit?
+export const E = {
+  ADD_PRODUCT: 'addProduct',
+}
+
+// todo константы, остальное перенести обратно во вью
 
 export function modalOpen(e) {
   let modalId = $(e.target).data('modal');
@@ -28,5 +32,6 @@ export function deleteProduct(e) {
     productId: this.dataset.product,
   });
 }
+
 
 

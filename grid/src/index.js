@@ -1,7 +1,8 @@
 import './sass/style.scss';
 import $ from 'jquery';
 
-import {getPromise} from './js/model.js';
+import {getProductById, getProductList, deleteProduct} from './js/model.js';
+
 import {toggleSpinner, toggleModal, renderTable, renderModalView,
   renderModalDelete, Alert} from './js/view.js';
 
@@ -11,7 +12,7 @@ async function loadPage() {
   toggleSpinner();
 
   try {
-    response = await getPromise();
+    response = await getProductList();
   } catch (e) {
     new Alert({
       type: 'danger',
@@ -32,7 +33,7 @@ const actions = {
     toggleSpinner();
     let response;
     try {
-      response = await getPromise(productId);
+      response = await getProductById(productId);
     } catch (e) {}
 
     renderModalView(response.Data);
@@ -68,7 +69,7 @@ eventEmitter.on('modalClose', ({modal}) => {
 eventEmitter.on('deleteProduct', async ({productId}) => {
   let response;
   try {
-    response = await getPromise(productId, 'delete');
+    response = await deleteProductById(productId);
   } catch (e) {}
 
   toggleModal('delete', true);

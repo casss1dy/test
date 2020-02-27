@@ -27,16 +27,16 @@
           </div>
 
           <div class="col-auto">
-            <button type="button" class="btn btn-success btn-add" id="addProduct" data-modal="add">Add</button>
+            <button type="button" class="btn btn-success btn-add" id="showAddModal" data-modal="add">Add</button>
           </div>
 
         </div>
       </div>
 
       <div class="table-responsive">
-        <table class="table-products table table-hover" id="tableProducts">
-          <tr>
-            <th width="5%"></th>
+        <table class="table-products table table-hover" id="tableProducts">         
+          <tr> 
+          <th width="5%"></th>
             <th>Name</th>
             <th>Price</th>
             <th></th>
@@ -61,19 +61,19 @@
             <div class="form-row">
               <div class="col-12">
                 <div class="form-group">
-                  <input type="text" class="form-control" id="name" placeholder="Your name">
+                  <input type="text" class="form-control" id="name" placeholder="Your name" value="Name">
                   <div class="invalid-feedback"></div>
                 </div>
               </div>
               <div class="col-12">
                 <div class="form-group">
-                  <input type="email" class="form-control" id="email" placeholder="Supplier email">
+                  <input type="email" class="form-control" id="email" placeholder="Supplier email" value="tst@tst.com">
                   <div class="invalid-feedback"></div>
                 </div>
               </div>
               <div class="col-5">
                 <div class="form-group">
-                  <input type="number" class="form-control" id="count" placeholder="Count">
+                  <input type="number" class="form-control" id="count" placeholder="Count" value="4">
                   <div class="invalid-feedback"></div>
                 </div>
               </div>
@@ -91,7 +91,7 @@
               <div class="col-12">
                 <div class="form-group">
                   <select class="form-control" id="delivery">
-                    <option selected disabled>Delivery</option>
+                    <option selected>None delivery</option>
                     <option value="country">Country</option>
                     <option value="city">City</option>
                   </select>
@@ -114,16 +114,19 @@
                   <div class="invalid-feedback"></div>
                 </div>
               </div>
-              <div class="col d-none">
+              <div class="col">
                 <div class="form-group">
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="saratov" id="saratov">
-                    <label class="form-check-label" for="saratov"> Saratov </label>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="moscow" id="moscow">
-                    <label class="form-check-label" for="moscow"> Moscow </label>
-                  </div>
+                  <fieldset class="form-fieldset">
+                    <legend class="form-legend">City</legend>
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" id="saratov" value="saratov">
+                      <label class="custom-control-label" for="saratov">Saratov</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" id="moscow" value="moscow">
+                      <label class="custom-control-label" for="moscow">Moscow</label>
+                    </div>
+                  </fieldset>
                   <div class="invalid-feedback"></div>
                 </div>
               </div>
@@ -131,7 +134,7 @@
           </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-success">Edit</button>
+          <button type="button" class="btn btn-success" id="addProduct">Edit</button>
         </div>
       </div>
     </div>
@@ -185,6 +188,8 @@
     <div class="spinner-grow" role="status"></div>
   </div>
   <div class="modal-backdrop d-none" id="pageBackdrop"></div>
+
+  <!-- todo backdrop availible to click -->
 
 </body>
 </html>

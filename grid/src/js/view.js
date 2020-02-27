@@ -7,17 +7,19 @@ const $dom = {
   spinner: $('#spinnerLoader'),
   backdrop: $('#pageBackdrop'),
   closeBtn: $('.btn-close'),
+  showAddModal: $('#showAddModal'), // show add modal
   product: {
     // item: $('.product'),
     // name: $('.product-name'),
     deleteBtn: $('#deleteProduct'),
     addBtn: $('#addProduct'),
+    
   },
   modal: {
     view: $('#view'),
     delete: $('#delete'),
     edit: $('#edit'),
-  }
+  },
 };
 
 // spinner => backdrop light => modal => backdrop dark
@@ -71,10 +73,16 @@ function createHTMLFragment(arrData, templateName) {
 
 // events
 import {modalClose, modalOpen, deleteProduct} from './ee';
+import {E} from './ee';
 
 $dom.table.on('click', '.product', modalOpen);
-$dom.product.addBtn.on('click', modalOpen);
+$dom.showAddModal.on('click', modalOpen);
 $dom.closeBtn.on('click', modalClose);
 $dom.product.deleteBtn.on('click', deleteProduct);
+
+$dom.product.addBtn.on('click', () => {
+  eventEmitter.emit(E.ADD_PRODUCT);
+});
+
 // Q - на добавленные элементы
 
