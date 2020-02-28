@@ -1,7 +1,7 @@
 import './sass/style.scss';
 import $ from 'jquery';
 
-import {getProductById, getProductList, deleteProduct} from './js/model.js';
+import {getProductById, getProductList, deleteProduct, addProduct} from './js/model.js';
 
 import {toggleSpinner, toggleModal, renderTable, renderModalView,
   renderModalDelete, Alert} from './js/view.js';
@@ -28,6 +28,7 @@ async function loadPage() {
   // todo render(data, callback)
 }
 
+// open + render dialogs
 const actions = {
   view: async function (productId) {
     toggleSpinner();
@@ -53,27 +54,57 @@ const actions = {
 };
 
 
-// TODO EE => View
-$(loadPage);
+$(loadPage); // TODO move to view
 
-import { eventEmitter } from './js/ee';
+import {OPEN, CLOSE, DELETE, ADD} from './js/ee';
+import eventEmitter from "./js/ee";
 
-eventEmitter.on('modalOpen', ({productId, modalId}) => {
+eventEmitter.on(OPEN, ({productId, modalId}) => {
   actions[modalId](productId);
 });
 
-eventEmitter.on('modalClose', ({modal}) => {
+eventEmitter.on(CLOSE, ({modal}) => {
   toggleModal(modal, true);
 });
 
-eventEmitter.on('deleteProduct', async ({productId}) => {
+eventEmitter.on(DELETE, async ({productId}) => {
   let response;
   try {
-    response = await deleteProductById(productId);
+    response = await deleteProduct(productId);
   } catch (e) {}
 
   toggleModal('delete', true);
 });
+
+eventEmitter.on(ADD, async ({data}) => {
+
+  // console.log(data);
+
+  const dataProcessed = dataProcessing(data);
+
+  console.log(dataProcessed);
+
+  let response;
+  try {
+    response = await addProduct(JSON.stringify(dataProcessed));
+  } catch (e) {}
+
+  toggleModal('edit', true);
+
+});
+
+
+function dataProcessing(data) {
+  let dataProcessed = {};
+  const isNumber = ['price', 'count'];
+
+  data.forEach((item) => {
+    dataProcessed[item.name] = ~$.inArray(item.name, isNumber) ? +item.value : item.value;
+  });
+
+  return dataProcessed;
+  // console.log(this.name + '=' + this.value);
+}
 
 
 

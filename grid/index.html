@@ -51,29 +51,29 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Edit <span></span></h5>
+          <h5 class="modal-title">Add <span></span></h5>
           <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
-          <form action="" class="form">
+          <form action="" class="form" name="add">
             <div class="form-row">
               <div class="col-12">
                 <div class="form-group">
-                  <input type="text" class="form-control" id="name" placeholder="Your name" value="Name">
+                  <input type="text" class="form-control" name="name" id="name" placeholder="Your name" value="Tst">
                   <div class="invalid-feedback"></div>
                 </div>
               </div>
               <div class="col-12">
                 <div class="form-group">
-                  <input type="email" class="form-control" id="email" placeholder="Supplier email" value="tst@tst.com">
+                  <input type="email" class="form-control" name="email" id="email" placeholder="Supplier email" value="tst@tst.com">
                   <div class="invalid-feedback"></div>
                 </div>
               </div>
               <div class="col-5">
                 <div class="form-group">
-                  <input type="number" class="form-control" id="count" placeholder="Count" value="4">
+                  <input type="number" class="form-control" name="count" id="count" placeholder="Count" value="4">
                   <div class="invalid-feedback"></div>
                 </div>
               </div>
@@ -83,7 +83,7 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text" id="inputGroupPrepend">$</span>
                     </div>
-                    <input type="text" class="form-control" id="price" placeholder="Price">
+                    <input type="text" class="form-control" name="price" id="price" placeholder="Price" value="666">
                   </div>
                   <div class="invalid-feedback"></div>
                 </div>
@@ -119,11 +119,11 @@
                   <fieldset class="form-fieldset">
                     <legend class="form-legend">City</legend>
                     <div class="custom-control custom-checkbox">
-                      <input type="checkbox" class="custom-control-input" id="saratov" value="saratov">
+                      <input type="checkbox" class="custom-control-input" name="city[]" id="saratov" value="saratov" checked>
                       <label class="custom-control-label" for="saratov">Saratov</label>
                     </div>
                     <div class="custom-control custom-checkbox">
-                      <input type="checkbox" class="custom-control-input" id="moscow" value="moscow">
+                      <input type="checkbox" class="custom-control-input" name="city[]" id="moscow" value="moscow">
                       <label class="custom-control-label" for="moscow">Moscow</label>
                     </div>
                   </fieldset>
@@ -134,7 +134,7 @@
           </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-success" id="addProduct">Edit</button>
+          <button type="button" class="btn btn-success" id="addProduct">Add</button>
         </div>
       </div>
     </div>

@@ -12,6 +12,12 @@ export function tableRow({id, count, name, price}) {
 }
 
 export function productView({email, count, price, delivery}) {
+  let deliveryInfo;
+  if (delivery.country === null && delivery.city === null) 
+    deliveryInfo = 'No';
+  else if (Array.isArray(delivery.city)) 
+    deliveryInfo = `${delivery.country} / ${delivery.city.join(', ')}`;
+    
   const template = `<tr>
         <th width="150">Count</th>
         <td>${count}</td>
@@ -26,7 +32,7 @@ export function productView({email, count, price, delivery}) {
     </tr>
     <tr>
         <th>Delivery</th>
-        <td>${delivery.country || ''} ${(Array.isArray(delivery.city) && delivery.city) ? '/ ' + delivery.city.join(', ') : ''}</td>
+        <td>${deliveryInfo}</td>
     </tr>`;
 
   return template;

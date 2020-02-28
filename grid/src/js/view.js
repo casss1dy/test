@@ -20,6 +20,9 @@ const $dom = {
     delete: $('#delete'),
     edit: $('#edit'),
   },
+  form: {
+    add: $(document.forms.add), // ?
+  }
 };
 
 // spinner => backdrop light => modal => backdrop dark
@@ -72,17 +75,46 @@ function createHTMLFragment(arrData, templateName) {
 }
 
 // events
-import {modalClose, modalOpen, deleteProduct} from './ee';
-import {E} from './ee';
+import {OPEN, CLOSE, DELETE, ADD} from './ee';
+import eventEmitter from "./ee";
 
 $dom.table.on('click', '.product', modalOpen);
 $dom.showAddModal.on('click', modalOpen);
 $dom.closeBtn.on('click', modalClose);
-$dom.product.deleteBtn.on('click', deleteProduct);
+
+$dom.product.deleteBtn.on('click', function(e) {
+  eventEmitter.emit(DELETE, {
+    productId: this.dataset.product,
+  });
+});
 
 $dom.product.addBtn.on('click', () => {
-  eventEmitter.emit(E.ADD_PRODUCT);
+  // let formData = new FormData(document.forms.add);
+
+  let data = $dom.form.add.serializeArray();
+  
+  eventEmitter.emit(ADD, {
+    data: data,
+  });
 });
 
 // Q - на добавленные элементы
+
+function modalOpen(e) {
+  let modalId = $(e.target).data('modal');
+  if (modalId === undefined) return;
+
+  eventEmitter.emit(OPEN, {
+    modalId: modalId,
+    productId: this.id || null,
+  });
+}
+
+function modalClose() {
+  let dismiss = $(this).data('dismiss');
+  eventEmitter.emit(CLOSE, {
+    modal: $(this).closest('.' + dismiss).data('action'),
+  });
+}
+
 

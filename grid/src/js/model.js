@@ -1,5 +1,53 @@
 import { ajax } from "jquery";
 
+export function getProductList() {
+  let endpointURL = getEndpointURL();
+  return getResponse(endpointURL);
+}
+
+export function getProductById(productId) {
+  let endpointURL = getEndpointURL('get', productId);
+  return getResponse(endpointURL);
+}
+
+export function deleteProduct(productId) {
+  let endpointURL = getEndpointURL('delete', productId);
+  return getResponse(endpointURL, 'DELETE');
+}
+
+export function addProduct(data) {
+  let endpointURL = getEndpointURL('add');
+  return getResponse(endpointURL, 'POST', data);
+}
+
+export function updateProduct(productId, data) {
+  let endpointURL = getEndpointURL('update', productId);
+  return getResponse(endpointURL, 'PUT', data);
+}
+
+// todo ? вынести в отд файл
+
+function getResponse (endpointURL, type = 'GET', data = null) {
+
+  const settings = {
+    dataType: 'json',
+    url: endpointURL,
+    type: type,
+  }
+
+
+  if (type === 'POST') {
+    settings.data = data;
+    settings.contentType = 'application/json';
+    settings.processData = false;
+
+  }
+
+  console.log(settings);
+
+  return ajax(settings);
+}
+
 function getEndpointURL(action = 'get', productId = null) {
   let url = 'https://api-crud-mongo.herokuapp.com/api/v1/products';
 
@@ -9,30 +57,5 @@ function getEndpointURL(action = 'get', productId = null) {
   return url;
 }
 
-export function getProductList() {
-  return getPromise();
-}
 
-export function getProductById(productId) {
-  return getPromise(productId);
-}
-
-export function deleteProduct(productId) {
-  return getPromise(productId, 'delete');
-}
-
-
-export function getPromise (productId = null, action = 'get') {
-  // TODO see about function name, transfer getEndpointURL func
-  let type;
-  if (action === 'update') type = 'PUT';
-  else if (action === 'add') type = 'POST';
-  else type = action.toUpperCase();
-
-  return ajax({
-    dataType: 'json',
-    url: getEndpointURL(action, productId),
-    type: type,
-  });
-}
 
