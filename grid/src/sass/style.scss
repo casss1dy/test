@@ -125,7 +125,10 @@ a {
 
 .alert-main {
   max-width: 300px;
+  margin: 0 auto;
   position: absolute;
   bottom: 40px;
-  right: 60px;
+  right: 0;
+  left: 0;
+  z-index: 1100;
 }

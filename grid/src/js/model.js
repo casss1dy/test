@@ -33,14 +33,13 @@ function getResponse (endpointURL, type = 'GET', data = null) {
     dataType: 'json',
     url: endpointURL,
     type: type,
-  }
+  };
 
 
   if (type === 'POST') {
     settings.data = data;
     settings.contentType = 'application/json';
     settings.processData = false;
-
   }
 
   console.log(settings);

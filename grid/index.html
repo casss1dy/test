@@ -34,8 +34,8 @@
       </div>
 
       <div class="table-responsive">
-        <table class="table-products table table-hover" id="tableProducts">         
-          <tr> 
+        <table class="table-products table table-hover" id="tableProducts">
+          <tr>
           <th width="5%"></th>
             <th>Name</th>
             <th>Price</th>
@@ -58,10 +58,11 @@
         </div>
         <div class="modal-body">
           <form action="" class="form" name="add">
-            <div class="form-row">
+            <fieldset>
+              <div class="form-row">
               <div class="col-12">
                 <div class="form-group">
-                  <input type="text" class="form-control" name="name" id="name" placeholder="Your name" value="Tst">
+                  <input type="text" class="form-control" name="name" id="name" placeholder="Your name" value="Car">
                   <div class="invalid-feedback"></div>
                 </div>
               </div>
@@ -130,11 +131,18 @@
                   <div class="invalid-feedback"></div>
                 </div>
               </div>
+              <div class="col-12">
+                <button class="btn btn-success" type="button" id="saveProduct" data-product="">
+                  <span class="spinner-grow spinner-grow-sm d-none" role="status" aria-hidden="true"></span>
+                  Add
+                </button>
+              </div>
             </div>
+            </fieldset>
           </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-success" id="addProduct">Add</button>
+
         </div>
       </div>
     </div>
@@ -154,7 +162,10 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-light btn-close" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-danger" id="deleteProduct" data-product="">Delete</button>
+          <button class="btn btn-danger" type="button" id="deleteProduct" data-product="">
+            <span class="spinner-grow spinner-grow-sm d-none" role="status" aria-hidden="true"></span>
+            Delete
+          </button>
         </div>
       </div>
     </div>

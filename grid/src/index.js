@@ -3,10 +3,11 @@ import $ from 'jquery';
 
 import {getProductById, getProductList, deleteProduct, addProduct} from './js/model.js';
 
+// TODO компоненты
 import {toggleSpinner, toggleModal, renderTable, renderModalView,
-  renderModalDelete, Alert} from './js/view.js';
+  renderModalDelete, toggleBtnDisable, isModalOpen, Alert} from './js/view.js';
 
-async function loadPage() {
+async function getList() {
   let response;
 
   toggleSpinner();
@@ -23,9 +24,8 @@ async function loadPage() {
     toggleSpinner();
   }
 
-  console.info(response.Data);
-  renderTable(response.Data);
-  // todo render(data, callback)
+  // console.info(response.Data);
+  renderTable(response.Data);  // todo render(data, callback)
 }
 
 // open + render dialogs
@@ -54,7 +54,7 @@ const actions = {
 };
 
 
-$(loadPage); // TODO move to view
+$(getList); // TODO move to view
 
 import {OPEN, CLOSE, DELETE, ADD} from './js/ee';
 import eventEmitter from "./js/ee";
@@ -68,29 +68,48 @@ eventEmitter.on(CLOSE, ({modal}) => {
 });
 
 eventEmitter.on(DELETE, async ({productId}) => {
-  let response;
-  try {
-    response = await deleteProduct(productId);
-  } catch (e) {}
+  toggleBtnDisable('deleteBtn'); // TODO именование
 
-  toggleModal('delete', true);
+  try {
+    await deleteProduct(productId);
+  } catch (e) {
+    new Alert({
+      type: 'danger',
+      error: e.status ? `${e.status} ${e.statusText}` : 'Something went wrong',
+    }).show();
+    return;
+  } finally {
+    if (isModalOpen('delete')) {
+      toggleModal('delete', true);
+    }
+  }
+
+  toggleBtnDisable('deleteBtn');
+  await getList();
 });
 
 eventEmitter.on(ADD, async ({data}) => {
-
-  // console.log(data);
-
+  toggleBtnDisable('saveBtn');
   const dataProcessed = dataProcessing(data);
-
   console.log(dataProcessed);
 
-  let response;
   try {
-    response = await addProduct(JSON.stringify(dataProcessed));
-  } catch (e) {}
+    await addProduct(JSON.stringify(dataProcessed));
+  } catch (e) {
+    new Alert({
+      type: 'danger',
+      error: e.status ? `${e.status} ${e.statusText}` : 'Something went wrong',
+    }).show();
+    return;
+  } finally {
+    toggleBtnDisable('saveBtn');
+  }
 
-  toggleModal('edit', true);
+  if (isModalOpen('edit')) {
+    toggleModal('edit', true);
+  }
 
+  await getList();
 });
 
 

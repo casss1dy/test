@@ -1,7 +1,7 @@
 import $ from "jquery";
 import * as template from './template_strings';
 
-// Q - вынести в отд файл конфигурации?
+// TODO after document ready
 const $dom = {
   table: $('#tableProducts'),
   spinner: $('#spinnerLoader'),
@@ -12,8 +12,8 @@ const $dom = {
     // item: $('.product'),
     // name: $('.product-name'),
     deleteBtn: $('#deleteProduct'),
-    addBtn: $('#addProduct'),
-    
+    saveBtn: $('#saveProduct'),
+
   },
   modal: {
     view: $('#view'),
@@ -37,6 +37,10 @@ export function toggleModal(type, isToggleBackdrop = false) {
   $dom.modal[type].toggleClass('show');
 }
 
+export function isModalOpen(type) {
+  return $dom.modal[type].hasClass('show');
+}
+
 function toggleBackdrop() {
   $('body').toggleClass('modal-open');
   $dom.backdrop.toggleClass('d-none');
@@ -54,7 +58,7 @@ export class Alert {
 
 export function renderTable(data) {
   let fragment = createHTMLFragment(data, 'tableRow');
-  $dom.table.append(fragment);
+  $dom.table.html(fragment);
 }
 
 export function renderModalView(data) {
@@ -74,6 +78,15 @@ function createHTMLFragment(arrData, templateName) {
   return arrData.reduce((htmlFragment, obj) => htmlFragment + htmlTemplate(obj), '');
 }
 
+export function toggleBtnDisable(btn) {
+  let $btn = $dom.product[btn];
+  let isDisable = $btn.prop('disabled');
+
+  $btn.closest('fieldset').prop('disabled', !isDisable);
+  $btn.prop('disabled', !isDisable);
+  $btn.children('.spinner-grow').toggleClass('d-none');
+}
+
 // events
 import {OPEN, CLOSE, DELETE, ADD} from './ee';
 import eventEmitter from "./ee";
@@ -88,11 +101,11 @@ $dom.product.deleteBtn.on('click', function(e) {
   });
 });
 
-$dom.product.addBtn.on('click', () => {
+$dom.product.saveBtn.on('click', () => {
   // let formData = new FormData(document.forms.add);
 
   let data = $dom.form.add.serializeArray();
-  
+
   eventEmitter.emit(ADD, {
     data: data,
   });
