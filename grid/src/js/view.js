@@ -23,7 +23,7 @@ const $dom = {
     edit: $('#edit'),
   },
   form: {
-    add: $('#formChange'), 
+    add: $('#formChange'),
   },
   search: {
     btn: $('#searchBtn'),
@@ -113,10 +113,20 @@ $dom.showAddModal.on('click', modalOpen);
 $dom.closeBtn.on('click', modalClose);
 
 $dom.table.head.on('click', '.sortable', function() {
-  // ??? 
+  // ? this передавать в контроллер и обратно во вью? или каккой-то id,
+  //  а после снова искать элемент с переданным id обратно
+  // debugger;
+  $dom.table.head.find('.sort').each(function () {
+    $(this).removeClass('sort-active');
+  });
+
+
+
+
+
   let icon = $(this).children('.sort');
   if (!icon.hasClass('sort-active')) icon.addClass('sort-active');
-  
+
   let oldDirection = this.dataset.sort;
   let direction = oldDirection === 'desc' || !oldDirection ? 'asc' : 'desc';
   this.dataset.sort = direction;
@@ -124,10 +134,17 @@ $dom.table.head.on('click', '.sortable', function() {
   icon.addClass(`sort-${direction}`);
   icon.removeClass(`sort-${oldDirection}`);
 
-  eventEmitter.emit(SORT, {
-    direction: direction,
-    field: this.dataset.field,
-  });
+  const options = {
+    sort: {
+      direction: direction,
+      field: this.dataset.field,
+    }
+  };
+
+  let searchStr = $dom.search.form.find('input[name="search"]').val();
+  if (searchStr) options.search = searchStr;
+  
+  eventEmitter.emit(SORT, options);
   console.log(this);
 });
 

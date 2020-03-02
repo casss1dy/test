@@ -34,9 +34,9 @@ async function getList(search = '', sort = '') { // todo передавать о
   if (!$.isEmptyObject(search)) {
     data = response.Data.filter((item) => {
       let name = item.name.toLowerCase();
-      return name.includes(search.search.toLowerCase());
+      return name.includes(search.toLowerCase());
     })
-  } 
+  }
 
   if (!$.isEmptyObject(sort)) {
     data = data.sort((a, b) => {
@@ -55,7 +55,7 @@ async function getList(search = '', sort = '') { // todo передавать о
 
   renderTable(data);
   console.log(data);
-  
+
 }
 
 // open + render dialogs
@@ -131,23 +131,23 @@ const validate = {
   email(value) {
     let pattern = /^[a-z0-9_-]+@[a-z0-9-]+\.[a-z]{2,6}$/i;
     // debugger;
-    if (value.search(pattern) == -1) 
+    if (value.search(pattern) == -1)
       throw new Error('Should be in email formate');
   },
 
   count(value) {
-    // todo . + - 
+    // todo . + -
     if (!+value) throw new Error('Should be non zero');
   },
 
   price(value) {
-    
+
   }
 };
 
 
 eventEmitter.on(VALIDATE, (input) => {
-  
+
   try {
     validate[input.name](input.value);
   } catch(e) {
@@ -156,18 +156,18 @@ eventEmitter.on(VALIDATE, (input) => {
   }
 
   toggleValidationError(input.name);
-  
+
 });
 
-eventEmitter.on(SEARCH, async (search) => {
+eventEmitter.on(SEARCH, async ({search}) => {
   // todo обработать строку search
   // todo кнопка сброса
   console.log(search);
   await getList(search);
 });
 
-eventEmitter.on(SORT, async (sort) => {
-  await getList('', sort);
+eventEmitter.on(SORT, async ({search = '', sort}) => {
+  await getList(search, sort);
   console.log(sort);
 });
 
