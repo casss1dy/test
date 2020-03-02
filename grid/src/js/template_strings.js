@@ -1,7 +1,9 @@
 export function tableRow({id, count, name, price}) {
   const template = `<tr id="${id}" class="product">
-          <td><span class="badge badge-warning">${count}</span></td>
-          <td><span class="product-name" data-modal="view">${name}</span></td>
+          <td>
+            <span class="product-name" data-modal="view">${name}</span>
+            <span class="badge badge-warning product-count">${count}</span>
+          </td>
           <td>${price.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</td>
           <td>
             <button type="button" class="btn btn-outline-success" data-modal="edit">Edit</button>

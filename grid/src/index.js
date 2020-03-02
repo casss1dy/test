@@ -5,9 +5,14 @@ import {getProductById, getProductList, deleteProduct, addProduct} from './js/mo
 
 // TODO компоненты
 import {toggleSpinner, toggleModal, renderTable, renderModalView,
-  renderModalDelete, toggleBtnDisable, isModalOpen, Alert} from './js/view.js';
+  renderModalDelete, toggleBtnDisable, isModalOpen, Alert, toggleValidationError, changeSorting} from './js/view.js';
 
-async function getList() {
+$(getList()); // TODO move to vie, параметры
+// $(async () => {
+//   await getList();
+// }); // TODO move to view
+
+async function getList(search = '', sort = '') { // todo передавать объект
   let response;
 
   toggleSpinner();
@@ -24,8 +29,33 @@ async function getList() {
     toggleSpinner();
   }
 
-  // console.info(response.Data);
-  renderTable(response.Data);  // todo render(data, callback)
+  let data = response.Data;
+
+  if (!$.isEmptyObject(search)) {
+    data = response.Data.filter((item) => {
+      let name = item.name.toLowerCase();
+      return name.includes(search.search.toLowerCase());
+    })
+  } 
+
+  if (!$.isEmptyObject(sort)) {
+    data = data.sort((a, b) => {
+      if (sort.direction === 'asc') {
+        if (a[sort.field] < b[sort.field]) return -1;
+        if (a[sort.field] > b[sort.field]) return 1;
+      } else {
+        if (a[sort.field] < b[sort.field]) return 1;
+        if (a[sort.field] > b[sort.field]) return -1;
+      }
+
+      return 0;
+    });
+
+  }
+
+  renderTable(data);
+  console.log(data);
+  
 }
 
 // open + render dialogs
@@ -53,10 +83,7 @@ const actions = {
   },
 };
 
-
-$(getList); // TODO move to view
-
-import {OPEN, CLOSE, DELETE, ADD} from './js/ee';
+import {OPEN, CLOSE, DELETE, ADD, VALIDATE, SEARCH, SORT} from './js/ee';
 import eventEmitter from "./js/ee";
 
 eventEmitter.on(OPEN, ({productId, modalId}) => {
@@ -88,10 +115,68 @@ eventEmitter.on(DELETE, async ({productId}) => {
   await getList();
 });
 
+const validate = {
+  name(value) {
+    let error = [];
+
+    if (!value) error.push('Should be not empty');
+    if (value.length > 15) error.push('Max length 15 characters');
+    if (!value.trim()) error.push('Should consist not only spaces');
+
+    if (error.length) {
+      throw new Error(error.join('<br>'));
+    }
+  },
+
+  email(value) {
+    let pattern = /^[a-z0-9_-]+@[a-z0-9-]+\.[a-z]{2,6}$/i;
+    // debugger;
+    if (value.search(pattern) == -1) 
+      throw new Error('Should be in email formate');
+  },
+
+  count(value) {
+    // todo . + - 
+    if (!+value) throw new Error('Should be non zero');
+  },
+
+  price(value) {
+    
+  }
+};
+
+
+eventEmitter.on(VALIDATE, (input) => {
+  
+  try {
+    validate[input.name](input.value);
+  } catch(e) {
+    toggleValidationError(input.name, e.message);
+    return;
+  }
+
+  toggleValidationError(input.name);
+  
+});
+
+eventEmitter.on(SEARCH, async (search) => {
+  // todo обработать строку search
+  // todo кнопка сброса
+  console.log(search);
+  await getList(search);
+});
+
+eventEmitter.on(SORT, async (sort) => {
+  await getList('', sort);
+  console.log(sort);
+});
+
 eventEmitter.on(ADD, async ({data}) => {
   toggleBtnDisable('saveBtn');
   const dataProcessed = dataProcessing(data);
   console.log(dataProcessed);
+
+  // return;
 
   try {
     await addProduct(JSON.stringify(dataProcessed));

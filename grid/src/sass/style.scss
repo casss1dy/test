@@ -45,23 +45,59 @@ a {
       transition: 0.2s;
     }
 
-    td:first-child {
-      text-align: right;
-    }
-
     &-count {
-      background-color: #ffc107;
-      border-radius: 50%;
-      color: #fff;
-      display: inline-block;
-      font-size: 12px;
-      font-weight: bold;
-      padding: 3px 5px;
+      float: right;
+      margin: 0 15px;
     }
 
     &-name {
       @extend a;
       cursor: pointer;
+    }
+  }
+
+  .sortable {
+    cursor: pointer;
+  }
+
+  .sort {
+    float: right;
+    margin: 0 15px;
+
+    span {
+      background-color: $cSort;
+      display: inline-block;
+      width: 2px;
+      height: 10px;
+      margin: 0 2px;
+    }
+
+    &-asc {
+      span {
+        &:first-child {
+          height: 5px;
+        }
+        &:last-child {
+          height: 15px;
+        }
+      }
+    }
+
+    &-desc {
+      span {
+        &:first-child {
+          height: 15px;
+        }
+        &:last-child {
+          height: 5px;
+        }
+      }
+    }
+
+    &-active {
+      span {
+        background-color: $cSortActive;
+      }
     }
   }
 }
@@ -92,6 +128,16 @@ a {
     border-radius: 0 4px 4px 0;
     padding: 7px 30px;
   }
+}
+
+.invalid-message {
+  font-size: 80%;
+  color: $cError;
+}
+
+.invalid-input, .invalid-input:focus {
+  border-color: $cError;
+  box-shadow: 0 0 0 0.2rem rgba(255, 0, 0, 0.25);
 }
 
 // modals

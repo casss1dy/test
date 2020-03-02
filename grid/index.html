@@ -18,10 +18,10 @@
       <div class="table-controls mb-5">
         <div class="row justify-content-between">
           <div class="col-6">
-            <form action="" class="form-search form-inline">
+            <form action="" class="form-search form-inline" id="searchForm">
               <div class="form-group">
-                <input type="text" class="form-control input-search" placeholder="Search...">
-                <button type="button" class="btn btn-light btn-search">Go!</button>
+                <input type="text" class="form-control input-search" name="search" placeholder="Search...">
+                <button type="button" class="btn btn-light btn-search" id="searchBtn">Go!</button>
               </div>
             </form>
           </div>
@@ -35,12 +35,24 @@
 
       <div class="table-responsive">
         <table class="table-products table table-hover" id="tableProducts">
-          <tr>
-          <th width="5%"></th>
-            <th>Name</th>
-            <th>Price</th>
-            <th></th>
-          </tr>
+          <thead>
+            <tr>
+                <th class="sortable" data-field="name">Name
+                  <span class="sort sort-asc">
+                    <span></span><span>
+                    </span><span></span>
+                  </span>
+                </th>
+                <th class="sortable" data-field="price">Price
+                  <span class="sort sort-asc">
+                    <span></span><span>
+                    </span><span></span>
+                  </span>
+                </th>
+                <th>Action</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
         </table>
       </div>
 
@@ -57,87 +69,85 @@
           </button>
         </div>
         <div class="modal-body">
-          <form action="" class="form" name="add">
+          <form action="" class="form" name="add" id="formChange">
             <fieldset>
-              <div class="form-row">
-              <div class="col-12">
-                <div class="form-group">
-                  <input type="text" class="form-control" name="name" id="name" placeholder="Your name" value="Car">
-                  <div class="invalid-feedback"></div>
+              <div class="form-group form-row">
+                <div class="col-7">
+                  <input type="text" class="form-control" name="name" id="name" placeholder="Your name" value="">
+                </div>
+                <div class="col align-self-center">
+                  <label class="invalid-message" for="name"></label>
                 </div>
               </div>
-              <div class="col-12">
-                <div class="form-group">
+              <div class="form-group form-row">
+                <div class="col-7">
                   <input type="email" class="form-control" name="email" id="email" placeholder="Supplier email" value="tst@tst.com">
-                  <div class="invalid-feedback"></div>
+                </div>
+                <div class="col align-self-center">
+                  <label class="invalid-message" for="email"></label>
                 </div>
               </div>
-              <div class="col-5">
-                <div class="form-group">
-                  <input type="number" class="form-control" name="count" id="count" placeholder="Count" value="4">
-                  <div class="invalid-feedback"></div>
+              <div class="form-group form-row">
+                <div class="col-5">
+                  <input type="number" class="form-control" name="count" id="count" placeholder="Count" min = "0" value="4">
+                </div>
+                <div class="col align-self-center">
+                  <label class="invalid-message" for="count"></label>
                 </div>
               </div>
-              <div class="col-7">
-                <div class="form-group">
+              <div class="form-group form-row">
+                <div class="col-5">
                   <div class="input-group">
                     <div class="input-group-prepend">
                       <span class="input-group-text" id="inputGroupPrepend">$</span>
                     </div>
-                    <input type="text" class="form-control" name="price" id="price" placeholder="Price" value="666">
+                    <input type="number" class="form-control" name="price" id="price" placeholder="Price" value="666">
                   </div>
-                  <div class="invalid-feedback"></div>
+                </div>
+                <div class="col align-self-center">
+                  <label class="invalid-message" for="price"></label>
                 </div>
               </div>
-              <div class="col-12">
-                <div class="form-group">
-                  <select class="form-control" id="delivery">
-                    <option selected>None delivery</option>
-                    <option value="country">Country</option>
-                    <option value="city">City</option>
-                  </select>
-                  <div class="invalid-feedback"></div>
-                </div>
+              <div class="form-group">
+                <select class="form-control" id="delivery">
+                  <option selected>None delivery</option>
+                  <option value="country">Country</option>
+                  <option value="city">City</option>
+                </select>
               </div>
-              <div class="col">
-                <div class="form-group mb-0">
-                  <fieldset class="form-fieldset">
-                    <legend class="form-legend">Country</legend>
-                    <div class="custom-control custom-radio">
-                      <input class="custom-control-input" type="radio" name="country" id="russia" value="russia" checked>
-                      <label class="custom-control-label" for="russia"> Russia </label>
-                    </div>
-                    <div class="custom-control custom-radio">
-                      <input class="custom-control-input" type="radio" name="country" id="holand" value="holand">
-                      <label class="custom-control-label" for="holand"> Holand </label>
-                    </div>
-                  </fieldset>
-                  <div class="invalid-feedback"></div>
-                </div>
+              <div class="form-group mb-0">
+                <fieldset class="form-fieldset">
+                  <legend class="form-legend">Country</legend>
+                  <div class="custom-control custom-radio">
+                    <input class="custom-control-input" type="radio" name="country" id="russia" value="russia" checked>
+                    <label class="custom-control-label" for="russia"> Russia </label>
+                  </div>
+                  <div class="custom-control custom-radio">
+                    <input class="custom-control-input" type="radio" name="country" id="holand" value="holand">
+                    <label class="custom-control-label" for="holand"> Holand </label>
+                  </div>
+                </fieldset>
               </div>
-              <div class="col">
-                <div class="form-group">
-                  <fieldset class="form-fieldset">
-                    <legend class="form-legend">City</legend>
-                    <div class="custom-control custom-checkbox">
-                      <input type="checkbox" class="custom-control-input" name="city[]" id="saratov" value="saratov" checked>
-                      <label class="custom-control-label" for="saratov">Saratov</label>
-                    </div>
-                    <div class="custom-control custom-checkbox">
-                      <input type="checkbox" class="custom-control-input" name="city[]" id="moscow" value="moscow">
-                      <label class="custom-control-label" for="moscow">Moscow</label>
-                    </div>
-                  </fieldset>
-                  <div class="invalid-feedback"></div>
-                </div>
+              <div class="form-group">
+                <fieldset class="form-fieldset">
+                  <legend class="form-legend">City</legend>
+                  <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" name="city[]" id="saratov" value="saratov" checked>
+                    <label class="custom-control-label" for="saratov">Saratov</label>
+                  </div>
+                  <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" name="city[]" id="moscow" value="moscow">
+                    <label class="custom-control-label" for="moscow">Moscow</label>
+                  </div>
+                </fieldset>
+                <div class="invalid-feedback"></div>
               </div>
-              <div class="col-12">
+              <div class="form-group mb-0">
                 <button class="btn btn-success" type="button" id="saveProduct" data-product="">
                   <span class="spinner-grow spinner-grow-sm d-none" role="status" aria-hidden="true"></span>
                   Add
                 </button>
               </div>
-            </div>
             </fieldset>
           </form>
         </div>

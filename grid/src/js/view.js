@@ -3,7 +3,10 @@ import * as template from './template_strings';
 
 // TODO after document ready
 const $dom = {
-  table: $('#tableProducts'),
+  table: {
+    head: $('#tableProducts thead'),
+    body: $('#tableProducts tbody'),
+  },
   spinner: $('#spinnerLoader'),
   backdrop: $('#pageBackdrop'),
   closeBtn: $('.btn-close'),
@@ -13,7 +16,6 @@ const $dom = {
     // name: $('.product-name'),
     deleteBtn: $('#deleteProduct'),
     saveBtn: $('#saveProduct'),
-
   },
   modal: {
     view: $('#view'),
@@ -21,7 +23,11 @@ const $dom = {
     edit: $('#edit'),
   },
   form: {
-    add: $(document.forms.add), // ?
+    add: $('#formChange'), 
+  },
+  search: {
+    btn: $('#searchBtn'),
+    form: $('#searchForm'),
   }
 };
 
@@ -58,7 +64,7 @@ export class Alert {
 
 export function renderTable(data) {
   let fragment = createHTMLFragment(data, 'tableRow');
-  $dom.table.html(fragment);
+  $dom.table.body.html(fragment);
 }
 
 export function renderModalView(data) {
@@ -87,13 +93,43 @@ export function toggleBtnDisable(btn) {
   $btn.children('.spinner-grow').toggleClass('d-none');
 }
 
+export function toggleValidationError(input, error = '') {
+  // debugger;
+  let $error = $dom.form.add.find(`label[for=${input}]`);
+  let $input = $dom.form.add.find(`#${input}`);
+
+  $error.html(error);
+  if (error && !$input.hasClass('invalid-input')) $input.addClass('invalid-input');
+  else if (!error && $input.hasClass('invalid-input')) $input.removeClass('invalid-input');
+}
+
 // events
-import {OPEN, CLOSE, DELETE, ADD} from './ee';
+import {OPEN, CLOSE, DELETE, ADD, VALIDATE, SEARCH, SORT} from './ee';
 import eventEmitter from "./ee";
 
-$dom.table.on('click', '.product', modalOpen);
+
+$dom.table.body.on('click', '.product', modalOpen);
 $dom.showAddModal.on('click', modalOpen);
 $dom.closeBtn.on('click', modalClose);
+
+$dom.table.head.on('click', '.sortable', function() {
+  // ??? 
+  let icon = $(this).children('.sort');
+  if (!icon.hasClass('sort-active')) icon.addClass('sort-active');
+  
+  let oldDirection = this.dataset.sort;
+  let direction = oldDirection === 'desc' || !oldDirection ? 'asc' : 'desc';
+  this.dataset.sort = direction;
+
+  icon.addClass(`sort-${direction}`);
+  icon.removeClass(`sort-${oldDirection}`);
+
+  eventEmitter.emit(SORT, {
+    direction: direction,
+    field: this.dataset.field,
+  });
+  console.log(this);
+});
 
 $dom.product.deleteBtn.on('click', function(e) {
   eventEmitter.emit(DELETE, {
@@ -111,7 +147,23 @@ $dom.product.saveBtn.on('click', () => {
   });
 });
 
-// Q - на добавленные элементы
+$dom.search.btn.on('click', () => {
+  // debugger;
+  let searchStr = $dom.search.form.find('input[name="search"]').val();
+
+  eventEmitter.emit(SEARCH, {search: searchStr});
+});
+
+$dom.form.add.on('input focusout', function(e) {
+  eventEmitter.emit(VALIDATE, {
+    name: e.target.name,
+    value : e.target.value,
+    // id: e.target.id,
+  });
+});
+
+
+// Q - на добавленные элементы (закрытие алерта)
 
 function modalOpen(e) {
   let modalId = $(e.target).data('modal');
