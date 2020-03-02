@@ -1,6 +1,10 @@
 import $ from "jquery";
 import * as template from './template_strings';
 
+// Q - нужен ли класс
+import FilterView from './views/filter';
+export const filterView = new FilterView();
+
 // TODO after document ready
 const $dom = {
   table: {
@@ -25,10 +29,6 @@ const $dom = {
   form: {
     add: $('#formChange'),
   },
-  search: {
-    btn: $('#searchBtn'),
-    form: $('#searchForm'),
-  }
 };
 
 // spinner => backdrop light => modal => backdrop dark
@@ -104,7 +104,7 @@ export function toggleValidationError(input, error = '') {
 }
 
 // events
-import {OPEN, CLOSE, DELETE, ADD, VALIDATE, SEARCH, SORT} from './ee';
+import {OPEN, CLOSE, DELETE, ADD, VALIDATE, SORT} from './ee';
 import eventEmitter from "./ee";
 
 
@@ -119,10 +119,6 @@ $dom.table.head.on('click', '.sortable', function() {
   $dom.table.head.find('.sort').each(function () {
     $(this).removeClass('sort-active');
   });
-
-
-
-
 
   let icon = $(this).children('.sort');
   if (!icon.hasClass('sort-active')) icon.addClass('sort-active');
@@ -141,9 +137,9 @@ $dom.table.head.on('click', '.sortable', function() {
     }
   };
 
-  let searchStr = $dom.search.form.find('input[name="search"]').val();
-  if (searchStr) options.search = searchStr;
-  
+  let filterStr = filterView.getFilterStr();
+  if (filterStr) options.search = filterStr;
+
   eventEmitter.emit(SORT, options);
   console.log(this);
 });
@@ -162,13 +158,6 @@ $dom.product.saveBtn.on('click', () => {
   eventEmitter.emit(ADD, {
     data: data,
   });
-});
-
-$dom.search.btn.on('click', () => {
-  // debugger;
-  let searchStr = $dom.search.form.find('input[name="search"]').val();
-
-  eventEmitter.emit(SEARCH, {search: searchStr});
 });
 
 $dom.form.add.on('input focusout', function(e) {

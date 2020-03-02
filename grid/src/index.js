@@ -12,7 +12,7 @@ $(getList()); // TODO move to vie, параметры
 //   await getList();
 // }); // TODO move to view
 
-async function getList(search = '', sort = '') { // todo передавать объект
+export async function getList(search = '', sort = '') { // todo передавать объект
   let response;
 
   toggleSpinner();
@@ -83,7 +83,7 @@ const actions = {
   },
 };
 
-import {OPEN, CLOSE, DELETE, ADD, VALIDATE, SEARCH, SORT} from './js/ee';
+import {OPEN, CLOSE, DELETE, ADD, VALIDATE, FILTER, SORT} from './js/ee';
 import eventEmitter from "./js/ee";
 
 eventEmitter.on(OPEN, ({productId, modalId}) => {
@@ -159,14 +159,20 @@ eventEmitter.on(VALIDATE, (input) => {
 
 });
 
-eventEmitter.on(SEARCH, async ({search}) => {
-  // todo обработать строку search
-  // todo кнопка сброса
-  console.log(search);
-  await getList(search);
-});
+// Q
+import FilterController from './js/controllers/filter';
+const filterController = new FilterController();
+
+// eventEmitter.on(FILTER, async ({search}) => {
+//   // todo обработать строку search
+//   // todo кнопка сброса
+//   // todo фильтр при нажатой сортировке
+//   console.log(search);
+//   await getList(search);
+// });
 
 eventEmitter.on(SORT, async ({search = '', sort}) => {
+  // todo session storage с настройкой sort (name, price)
   await getList(search, sort);
   console.log(sort);
 });

@@ -18,10 +18,13 @@
       <div class="table-controls mb-5">
         <div class="row justify-content-between">
           <div class="col-6">
-            <form action="" class="form-search form-inline" id="searchForm">
+            <form action="" class="form-search form-inline" id="filterForm">
               <div class="form-group">
                 <input type="text" class="form-control input-search" name="search" placeholder="Search...">
-                <button type="button" class="btn btn-light btn-search" id="searchBtn">Go!</button>
+                <button type="button" class="btn btn-search-reset" id="resetBtn">
+                  <span aria-hidden="true">×</span>
+                </button>
+                <button type="button" class="btn btn-light btn-search" id="filterBtn">Go!</button>
               </div>
             </form>
           </div>
