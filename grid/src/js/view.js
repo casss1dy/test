@@ -137,8 +137,8 @@ $dom.table.head.on('click', '.sortable', function() {
     }
   };
 
-  let filterStr = filterView.getFilterStr();
-  if (filterStr) options.search = filterStr;
+  // let filterStr = filterView.getFilterStr();
+  if (filterView.filterStr) options.search = filterView.filterStr;
 
   eventEmitter.emit(SORT, options);
   console.log(this);

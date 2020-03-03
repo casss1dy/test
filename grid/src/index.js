@@ -137,11 +137,14 @@ const validate = {
 
   count(value) {
     // todo . + -
-    if (!+value) throw new Error('Should be non zero');
+    // макс колв-о символов в константу
+    if (parseFloat(value) === 0) throw new Error('Should be non zero');
+    if (!+value) throw new Error('Should be not empty');
+    if (value.length > 10) throw new Error('Max count is 9,999,999,999');
   },
 
   price(value) {
-
+    if (value.length > 10) throw new Error('Max price is 9,999,999,999');
   }
 };
 
@@ -162,14 +165,6 @@ eventEmitter.on(VALIDATE, (input) => {
 // Q
 import FilterController from './js/controllers/filter';
 const filterController = new FilterController();
-
-// eventEmitter.on(FILTER, async ({search}) => {
-//   // todo обработать строку search
-//   // todo кнопка сброса
-//   // todo фильтр при нажатой сортировке
-//   console.log(search);
-//   await getList(search);
-// });
 
 eventEmitter.on(SORT, async ({search = '', sort}) => {
   // todo session storage с настройкой sort (name, price)
