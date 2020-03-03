@@ -1,9 +1,13 @@
 import $ from "jquery";
 import * as template from './template_strings';
 
-// Q - нужен ли класс
+// Q
 import FilterView from './views/filter';
 export const filterView = new FilterView();
+
+// 
+import ModalView from './views/modal';
+export const modalView = new ModalView();
 
 // TODO after document ready
 const $dom = {
@@ -38,16 +42,7 @@ export function toggleSpinner(isToggleBackdrop = true) {
   $dom.spinner.toggleClass('d-none');
 }
 
-export function toggleModal(type, isToggleBackdrop = false) {
-  if (isToggleBackdrop) toggleBackdrop();
-  $dom.modal[type].toggleClass('show');
-}
-
-export function isModalOpen(type) {
-  return $dom.modal[type].hasClass('show');
-}
-
-function toggleBackdrop() {
+export function toggleBackdrop() {
   $('body').toggleClass('modal-open');
   $dom.backdrop.toggleClass('d-none');
 }
@@ -65,14 +60,6 @@ export class Alert {
 export function renderTable(data) {
   let fragment = createHTMLFragment(data, 'tableRow');
   $dom.table.body.html(fragment);
-}
-
-export function renderModalView(data) {
-  let arrData = Array.isArray(data) ? data : [data];
-  let fragment = createHTMLFragment(arrData, 'productView');
-
-  $dom.modal.view.find('.product-name').text(data.name);
-  $dom.modal.view.find('.product-info').html(fragment);
 }
 
 export function renderModalDelete(productId) {
@@ -108,12 +95,12 @@ import {OPEN, CLOSE, DELETE, ADD, VALIDATE, SORT} from './ee';
 import eventEmitter from "./ee";
 
 
-$dom.table.body.on('click', '.product', modalOpen);
-$dom.showAddModal.on('click', modalOpen);
-$dom.closeBtn.on('click', modalClose);
+$dom.table.body.on('click', '.product', modalView.open);
+$dom.showAddModal.on('click', modalView.open);
+$dom.closeBtn.on('click', modalView.close);
 
 $dom.table.head.on('click', '.sortable', function() {
-  // ? this передавать в контроллер и обратно во вью? или каккой-то id,
+  // Q - this передавать в контроллер и обратно во вью? или каккой-то id,
   //  а после снова искать элемент с переданным id обратно
   // debugger;
   $dom.table.head.find('.sort').each(function () {
@@ -171,21 +158,5 @@ $dom.form.add.on('input focusout', function(e) {
 
 // Q - на добавленные элементы (закрытие алерта)
 
-function modalOpen(e) {
-  let modalId = $(e.target).data('modal');
-  if (modalId === undefined) return;
-
-  eventEmitter.emit(OPEN, {
-    modalId: modalId,
-    productId: this.id || null,
-  });
-}
-
-function modalClose() {
-  let dismiss = $(this).data('dismiss');
-  eventEmitter.emit(CLOSE, {
-    modal: $(this).closest('.' + dismiss).data('action'),
-  });
-}
 
 

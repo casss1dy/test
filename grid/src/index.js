@@ -59,40 +59,50 @@ export async function getList(search = '', sort = '') { // todo передава
 }
 
 // open + render dialogs
-const actions = {
-  view: async function (productId) {
-    toggleSpinner();
-    let response;
-    try {
-      response = await getProductById(productId);
-    } catch (e) {}
+// const actions = {
+//   view: async function (productId) {
+//     toggleSpinner();
+//     let response;
+//     try {
+//       response = await getProductById(productId);
+//     } catch (e) {}
 
-    renderModalView(response.Data);
-    toggleSpinner(false);
-    toggleModal('view');
-  },
-  add: function (productId) {
-    toggleModal('edit', true);
-  },
-  edit: function (productId) {
-    toggleModal('edit', true);
-  },
-  delete: function (productId) {
-    renderModalDelete(productId);
-    toggleModal('delete', true);
-  },
-};
+//     renderModalView(response.Data);
+//     toggleSpinner(false);
+//     toggleModal('view');
+//   },
+//   add: function (productId) {
+//     toggleModal('edit', true);
+//   },
+//   edit: function (productId) {
+//     toggleModal('edit', true);
+//   },
+//   delete: function (productId) {
+//     renderModalDelete(productId);
+//     toggleModal('delete', true);
+//   },
+// };
 
 import {OPEN, CLOSE, DELETE, ADD, VALIDATE, FILTER, SORT} from './js/ee';
 import eventEmitter from "./js/ee";
 
-eventEmitter.on(OPEN, ({productId, modalId}) => {
-  actions[modalId](productId);
-});
+// eventEmitter.on(OPEN, ({productId, modalId}) => {
+//   actions[modalId](productId);
+// });
 
-eventEmitter.on(CLOSE, ({modal}) => {
-  toggleModal(modal, true);
-});
+// eventEmitter.on(CLOSE, ({modal}) => {
+//   toggleModal(modal, true);
+// });
+
+// Q
+import FilterController from './js/controllers/filter';
+const filterController = new FilterController();
+
+import ModalView from './js/views/modal';
+const modalView = new ModalView();
+
+import ModalController from './js/controllers/modal';
+const modalController = new ModalController();
 
 eventEmitter.on(DELETE, async ({productId}) => {
   toggleBtnDisable('deleteBtn'); // TODO именование
@@ -106,8 +116,8 @@ eventEmitter.on(DELETE, async ({productId}) => {
     }).show();
     return;
   } finally {
-    if (isModalOpen('delete')) {
-      toggleModal('delete', true);
+    if (modalView.isOpen('delete')) {
+      modalView.toggle('delete', true);
     }
   }
 
@@ -162,9 +172,6 @@ eventEmitter.on(VALIDATE, (input) => {
 
 });
 
-// Q
-import FilterController from './js/controllers/filter';
-const filterController = new FilterController();
 
 eventEmitter.on(SORT, async ({search = '', sort}) => {
   // todo session storage с настройкой sort (name, price)
@@ -191,8 +198,8 @@ eventEmitter.on(ADD, async ({data}) => {
     toggleBtnDisable('saveBtn');
   }
 
-  if (isModalOpen('edit')) {
-    toggleModal('edit', true);
+  if (modalView.isOpen('edit')) {
+    modalView.toggle('edit', true);
   }
 
   await getList();
