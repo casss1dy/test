@@ -1,5 +1,7 @@
 import eventEmitter, {OPEN, CLOSE} from "../ee";
+import {getProductById} from "../models/model";
 import {modalView, renderModalDelete} from "../view";
+import {toggleSpinner} from '../views/spinner'; // TODO убрать 
 
 export default class ModalController {
   constructor() {
@@ -16,7 +18,7 @@ export default class ModalController {
         toggleSpinner(false);
         modalView.toggle('view');
       },
-      add: function (productId) {
+      add: function () {
         modalView.toggle('edit', true);
       },
       edit: function (productId) {

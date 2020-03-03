@@ -1,6 +1,6 @@
 import $ from "jquery";
 import eventEmitter, {OPEN, CLOSE} from "../ee";
-import {toggleBackdrop} from '../view';
+import {toggleBackdrop, createHTMLFragment} from '../view';
 
 export default class ModalView {
     constructor() {

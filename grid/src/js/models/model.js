@@ -25,7 +25,7 @@ export function updateProduct(productId, data) {
   return getResponse(endpointURL, 'PUT', data);
 }
 
-// todo ? вынести в отд файл
+// TODO ? вынести в отд файл
 
 function getResponse (endpointURL, type = 'GET', data = null) {
 

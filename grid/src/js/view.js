@@ -1,13 +1,14 @@
 import $ from "jquery";
-import * as template from './template_strings';
+import * as template from './views/template_strings';
 
 // Q
 import FilterView from './views/filter';
 export const filterView = new FilterView();
 
-// 
 import ModalView from './views/modal';
 export const modalView = new ModalView();
+
+// import {toggleValidationError} from './views/form';
 
 // TODO after document ready
 const $dom = {
@@ -35,12 +36,6 @@ const $dom = {
   },
 };
 
-// spinner => backdrop light => modal => backdrop dark
-export function toggleSpinner(isToggleBackdrop = true) {
-  if (isToggleBackdrop) toggleBackdrop();
-  $dom.backdrop.toggleClass('backdrop-light');
-  $dom.spinner.toggleClass('d-none');
-}
 
 export function toggleBackdrop() {
   $('body').toggleClass('modal-open');
@@ -66,32 +61,13 @@ export function renderModalDelete(productId) {
   $dom.product.deleteBtn.attr('data-product', productId);
 }
 
-function createHTMLFragment(arrData, templateName) {
+export function createHTMLFragment(arrData, templateName) {
   let htmlTemplate = template[templateName];
   return arrData.reduce((htmlFragment, obj) => htmlFragment + htmlTemplate(obj), '');
 }
 
-export function toggleBtnDisable(btn) {
-  let $btn = $dom.product[btn];
-  let isDisable = $btn.prop('disabled');
-
-  $btn.closest('fieldset').prop('disabled', !isDisable);
-  $btn.prop('disabled', !isDisable);
-  $btn.children('.spinner-grow').toggleClass('d-none');
-}
-
-export function toggleValidationError(input, error = '') {
-  // debugger;
-  let $error = $dom.form.add.find(`label[for=${input}]`);
-  let $input = $dom.form.add.find(`#${input}`);
-
-  $error.html(error);
-  if (error && !$input.hasClass('invalid-input')) $input.addClass('invalid-input');
-  else if (!error && $input.hasClass('invalid-input')) $input.removeClass('invalid-input');
-}
-
 // events
-import {OPEN, CLOSE, DELETE, ADD, VALIDATE, SORT} from './ee';
+import {SORT} from './ee';
 import eventEmitter from "./ee";
 
 
@@ -131,32 +107,7 @@ $dom.table.head.on('click', '.sortable', function() {
   console.log(this);
 });
 
-$dom.product.deleteBtn.on('click', function(e) {
-  eventEmitter.emit(DELETE, {
-    productId: this.dataset.product,
-  });
-});
 
-$dom.product.saveBtn.on('click', () => {
-  // let formData = new FormData(document.forms.add);
-
-  let data = $dom.form.add.serializeArray();
-
-  eventEmitter.emit(ADD, {
-    data: data,
-  });
-});
-
-$dom.form.add.on('input focusout', function(e) {
-  eventEmitter.emit(VALIDATE, {
-    name: e.target.name,
-    value : e.target.value,
-    // id: e.target.id,
-  });
-});
-
-
-// Q - на добавленные элементы (закрытие алерта)
 
 
 
