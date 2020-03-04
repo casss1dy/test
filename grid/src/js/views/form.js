@@ -8,14 +8,14 @@ const $form = {
 const $btn = {
     delete: $('#deleteProduct'),
     save: $('#saveProduct'),
-}
+};
 
 $btn.delete.on('click', function(e) {
     eventEmitter.emit(DELETE, {
       productId: this.dataset.product,
     });
 });
-  
+
 $btn.save.on('click', () => {
     let data = $form.change.serializeArray();
     eventEmitter.emit(ADD, {
@@ -49,4 +49,3 @@ export function toggleBtnDisable(btn) {
   $currentBtn.prop('disabled', !isDisable);
   $currentBtn.children('.spinner-grow').toggleClass('d-none');
 }
-  
