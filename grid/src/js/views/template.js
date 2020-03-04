@@ -13,6 +13,10 @@ export function tableRow({id, count, name, price}) {
   return template;
 }
 
+export function table(rows) {
+  return rows.map(r => tableRow(r)).join('');
+}
+
 export function productView({email, count, price, delivery}) {
   let deliveryInfo;
   if (delivery.country === null && delivery.city === null) 

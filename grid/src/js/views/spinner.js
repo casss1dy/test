@@ -1,13 +1,19 @@
 import $ from "jquery";
-import {toggleBackdrop} from '../view';
 
-const $dom = {
-  spinner: $('#spinnerLoader'),
-  backdrop: $('#pageBackdrop'),
-};
+export default class spinnerView {
+  constructor() {
+    this.$spinner = $('#spinnerLoader');
+    this.$backdrop = $('#pageBackdrop');
+  }
 
-export function toggleSpinner(isToggleBackdrop = true) {
-  if (isToggleBackdrop) toggleBackdrop();
-  $dom.backdrop.toggleClass('backdrop-light');
-  $dom.spinner.toggleClass('d-none');
+  toggle(isToggleBackdrop) {
+    
+    if (isToggleBackdrop) {
+      $('body').toggleClass('modal-open');
+      this.$backdrop.toggleClass('d-none');
+    };
+
+    this.$backdrop.toggleClass('backdrop-light');
+    this.$spinner.toggleClass('d-none');
+  }
 }

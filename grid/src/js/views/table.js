@@ -1,20 +1,20 @@
 import $ from "jquery";
 import {tableRow} from "./template";
-import eventEmitter, {LOAD, SORT} from "../ee";
+import eventEmitter, {LOAD, SORT, OPEN} from "../ee";
 import {filterView} from "../view";
 
 export default class TableView {
   constructor() {
-    $(() => {
-      eventEmitter.emit(LOAD);
-    });
+    let self = this;
+    const $table = $('#tableProducts');
+    self.$thead = $table.find('thead');
+    self.$tbody = $table.find('tbody');
+
+    self.$tbody.on('click', '.product', self.triggerModalOpen);
   }
 
   init() {
-    const $table = $('#tableProducts');
     let self = this;
-    self.$thead = $table.find('thead');
-    self.$tbody = $table.find('tbody');
 
     self.$thead.on('click', '.sortable', function() {
       // TODO - убрать лишнее в контроллер
@@ -48,15 +48,35 @@ export default class TableView {
     });
   }
 
-  render(arrData) {
-    this.$tbody.html(this.createHTML(arrData));
+  render(rows) {
+    this.$tbody.html(
+      rows.map(r => this.template(r)).join('')
+    );
   }
 
-  createHTML(arrData) {
-    return arrData.reduce((htmlFragment, obj) => htmlFragment + tableRow(obj), '');
+  template({id, count, name, price}) {
+    const template = `<tr id="${id}" class="product">
+            <td>
+              <span class="product-name" data-modal="view">${name}</span>
+              <span class="badge badge-warning product-count">${count}</span>
+            </td>
+            <td>${price.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</td>
+            <td>
+              <button type="button" class="btn btn-outline-success" data-modal="edit">Edit</button>
+              <button type="button" class="btn btn-outline-danger btn-delete" data-modal="delete">Delete</button>
+            </td>
+        </tr>`;
+    return template;
   }
 
-
-
-
+  triggerModalOpen (e) {
+    let modalId = $(e.target).data('modal');
+    if (modalId === undefined) return;
+  
+    eventEmitter.emit(OPEN, {
+      modalId: modalId,
+      productId: this.id || null,
+    });
+  }
+  
 }

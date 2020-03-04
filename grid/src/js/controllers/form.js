@@ -1,5 +1,7 @@
 import eventEmitter, {ADD, VALIDATE, DELETE} from "../ee";
 import {toggleBtnDisable, toggleValidationError} from '../views/form';
+
+
 import {deleteProduct, addProduct} from '../models/model.js';
 import {getList, modalView} from '../../index'; // TODO избавиться от этих зависимостей
 import $ from "jquery"; // TODO заменить $ и убрать

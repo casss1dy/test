@@ -1,6 +1,5 @@
-import eventEmitter, {LOAD, SORT} from "../ee";
+import eventEmitter, {LOAD, SORT, SPINNER} from "../ee";
 import {Alert} from "../view";
-import {toggleSpinner} from "../views/spinner";
 import {getProductList} from "../models/model";
 import $ from "jquery";
 
@@ -8,24 +7,25 @@ export default class TableController {
   constructor(view) {
     let self = this;
     self.view = view;
+    self.init();
+  }
 
-    eventEmitter.on(LOAD, async () => {
-      // this.view.init();
-      await self.init();
+  async init() {
+    let self = this;
+    await self.render();
 
-      eventEmitter.on(SORT, async ({search = '', sort}) => {
-        await self.init(search, sort);
-      });
+    eventEmitter.on(SORT, async ({search = '', sort}) => {
+      await self.init(search, sort);
     });
   }
 
-  async init(search = '', sort = '') {
-    console.log(self.view);
-    self.view.init();
-
+  async render(search = '', sort = '') {
+    let self = this;
     let response;
+    
+    console.log('klfdklfkd');
 
-    toggleSpinner(); // TODO trigger event
+    eventEmitter.emit(SPINNER);
 
     try {
       response = await getProductList();
@@ -36,7 +36,7 @@ export default class TableController {
       }).show();
       return;
     } finally {
-      toggleSpinner();
+      eventEmitter.emit(SPINNER);
     }
 
     let data = response.Data;

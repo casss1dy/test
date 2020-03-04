@@ -1,23 +1,16 @@
-import eventEmitter, {OPEN, CLOSE} from "../ee";
+import eventEmitter, {OPEN, CLOSE, SPINNER} from "../ee";
 import {getProductById} from "../models/model";
 import {modalView, renderModalDelete} from "../view";
-import {toggleSpinner} from '../views/spinner'; // TODO убрать 
 
 export default class ModalController {
-  constructor() {
+  constructor(view) {
+    console.log('sdsds', view.$id);
+    if (view.$id.id === 'view') return new ModalView();
 
     const actions = {
-      view: async function (productId) {
-        toggleSpinner();
-        let response;
-        try {
-          response = await getProductById(productId);
-        } catch (e) {}
-    
-        modalView.renderModalView(response.Data);
-        toggleSpinner(false);
-        modalView.toggle('view');
-      },
+
+
+
       add: function () {
         modalView.toggle('edit', true);
       },
@@ -30,13 +23,36 @@ export default class ModalController {
       },
     };
 
-    eventEmitter.on(OPEN, ({productId, modalId}) => {
-      actions[modalId](productId);
-    });
 
-    eventEmitter.on(CLOSE, ({modal}) => {
-      modalView.toggle(modal, true);
-    });
   }
+}
 
+class ModalView {
+  constructor() {
+    let self = this;
+    self.view = view;
+
+    eventEmitter.on(OPEN, ({productId}) => self.show(productId));
+    eventEmitter.on(CLOSE, () => self.view.toggle(true));
+
+    console.log(self);
+  }  
+
+  async show(productId) {
+    console.log('ннннн');
+
+    let self = this;
+
+    eventEmitter.emit(SPINNER);
+    
+    let response;
+    try {
+      response = await getProductById(productId);
+    } catch (e) {}
+
+    self.view.render(response.Data);
+    self.view.toggle();
+
+    eventEmitter.emit(SPINNER, false);
+  }
 }

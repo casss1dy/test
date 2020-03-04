@@ -13,6 +13,7 @@ export const CLOSE = 'modal/CLOSE';
 export const VALIDATE = 'form/VALIDATE'; // move to product ns?
 
 export const LOAD = 'dom/LOAD';
+export const SPINNER = 'dom/SPINNER';
 
 
 
