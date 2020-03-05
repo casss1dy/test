@@ -16,18 +16,19 @@ import {MCView, MCChange, MCDelete} from './js/controllers/modal';
 console.log(1, MVView);
 
 $(() => {
-  
+
   let spinner = new SpinnerController(new SpinnerView());
-  
+
   let modalView = new ModalController(new ModalView('view'));
+  let modalDelete = new ModalController(new ModalView('delete'));
 
   let view = new TableView();
   let controller = new TableController(view);
 
-  // move компоненты 
+  // move компоненты
 });
 
-// 
+//
 import './js/controllers/form';
 
 // Q

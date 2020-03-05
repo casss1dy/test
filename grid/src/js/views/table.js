@@ -72,11 +72,14 @@ export default class TableView {
   triggerModalOpen (e) {
     let modalId = $(e.target).data('modal');
     if (modalId === undefined) return;
-  
+
+    console.log('modal', modalId);
+    console.log(this.id);
+
     eventEmitter.emit(OPEN, {
       modalId: modalId,
       productId: this.id || null,
     });
   }
-  
+
 }

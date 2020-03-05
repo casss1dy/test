@@ -4,20 +4,25 @@ import {createHTMLFragment} from '../view';
 
 export default class ModalView {
     constructor(type) {
-
       let self = this;
-
       self.$backdrop = $('#pageBackdrop');
 
-      if (type === 'view') return new View();
+      console.log(type);
+      let modalView;
+      if (type === 'view') modalView = new View();
+      if (type === 'delete') modalView = new Delete();
+      if (type === 'change') modalView = new Change();
+
+      return modalView;
     }
 
     toggle(isToggleBackdrop = false) {
+      console.log('toggle');
       if (isToggleBackdrop) {
         $('body').toggleClass('modal-open');
         this.$backdrop.toggleClass('d-none');
-      };
-      this.$id.toggleClass('show');
+      }
+      this.$modal.toggleClass('show');
     }
 
     isOpen(type) {
@@ -29,26 +34,24 @@ export default class ModalView {
 export class View extends ModalView {
   constructor() {
     super();
-    this.$id = $('#view');
+    this.$modal = $('#view');
 
-    console.log('view----');
-
-    $('.btn-close').on('click', () => {
-      eventEmitter.emit(CLOSE);
+    this.$modal.find('.btn-close').on('click', () => {
+      eventEmitter.emit(CLOSE, {modal: this.$modal.attr('id')});
     });
   }
 
   render(data) {
-    this.$id.find('.product-name').text(data.name);
-    this.$id.find('.product-info').html(this.template(data));
+    this.$modal.find('.product-name').text(data.name);
+    this.$modal.find('.product-info').html(this.template(data));
   }
 
   template({email, count, price, delivery}) {
     let deliveryInfo;
-    if (delivery.country === null && delivery.city === null) deliveryInfo = 'No'; //TODO see 
-    else if (Array.isArray(delivery.city)) 
+    if (delivery.country === null && delivery.city === null) deliveryInfo = 'No'; //TODO see
+    else if (Array.isArray(delivery.city))
       deliveryInfo = `${delivery.country} / ${delivery.city.join(', ')}`;
-      
+
     const template = `<tr>
           <th width="150">Count</th>
           <td>${count}</td>
@@ -65,7 +68,31 @@ export class View extends ModalView {
           <th>Delivery</th>
           <td>${deliveryInfo}</td>
       </tr>`;
-  
+
     return template;
+  }
+}
+
+export class Delete extends ModalView {
+  constructor() {
+    super();
+    this.$modal = $('#delete');
+    this.$deleteBtn = $('#deleteProduct');
+
+    this.$modal.find('.btn-close').on('click', () => {
+      eventEmitter.emit(CLOSE, {modal: this.$modal.attr('id')});
+    });
+  }
+
+  render(data) {
+    this.$modal.find('.product-name').text(data.name);
+    this.$modal.find('.product-info').html(this.template(data));
+  }
+
+  setId(id) {
+    this.$deleteBtn.attr('data-product', id);
+  }
+
+  template() {
   }
 }

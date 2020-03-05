@@ -61,7 +61,7 @@ export function renderModalDelete(productId) {
   $dom.product.deleteBtn.attr('data-product', productId);
 }
 
-// utilites 
+// utilites ?
 export function createHTMLFragment(arrData, templateName) {
   let htmlTemplate = template[templateName];
   return arrData.reduce((htmlFragment, obj) => htmlFragment + htmlTemplate(obj), '');
