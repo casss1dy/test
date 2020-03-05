@@ -3,19 +3,18 @@ import eventEmitter, {FILTER} from "../ee";
 
 export default class FilterView {
   constructor() {
-    this.$form = $('#filterForm');
-    this.$btn = this.$form.find('#filterBtn');
-    this.$btnReset = this.$form.find('#resetBtn');
-    this.$input = this.$form.find('input[name="search"]');
+    let self = this;
+    
+    self.$form = $('#filterForm');
+    self.$btn = this.$form.find('#filterBtn');
+    self.$btnReset = this.$form.find('#resetBtn');
+    self.$input = this.$form.find('input[name="search"]');
 
-    // Q - нужно ли объединить в один .on на кнопки 
-    // и в зависимости от id кнопки передавать строку фильтра
-    this.$btn.on('click', () => {
-      console.log(this.filterStr);
-      eventEmitter.emit(FILTER, {filter: this.filterStr});
+    self.$btn.on('click', () => {
+      eventEmitter.emit(FILTER, {filter: self.filterStr});
     });
 
-    this.$btnReset.on('click', () => {
+    self.$btnReset.on('click', () => {
       eventEmitter.emit(FILTER, {filter: ''});
     });
   }

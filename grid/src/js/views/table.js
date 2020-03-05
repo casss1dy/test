@@ -1,7 +1,5 @@
 import $ from "jquery";
-import {tableRow} from "./template";
-import eventEmitter, {LOAD, SORT, OPEN} from "../ee";
-import {filterView} from "../view";
+import eventEmitter, {SORT, OPEN, RENDER} from "../ee";
 
 export default class TableView {
   constructor() {
@@ -9,49 +7,33 @@ export default class TableView {
     const $table = $('#tableProducts');
     self.$thead = $table.find('thead');
     self.$tbody = $table.find('tbody');
+    self.$btnAdd = $('#showAddModal');
 
     self.$tbody.on('click', '.product', self.triggerModalOpen);
-  }
-
-  init() {
-    let self = this;
-
-    self.$thead.on('click', '.sortable', function() {
-      // TODO - убрать лишнее в контроллер
-      // debugger;
-      self.$thead.find('.sort').each(function () {
-        $(this).removeClass('sort-active');
-      });
-
-      let icon = $(this).children('.sort');
-      if (!icon.hasClass('sort-active')) icon.addClass('sort-active');
-
-      let oldDirection = this.dataset.sort;
-      let direction = oldDirection === 'desc' || !oldDirection ? 'asc' : 'desc';
-      this.dataset.sort = direction;
-
-      icon.addClass(`sort-${direction}`);
-      icon.removeClass(`sort-${oldDirection}`);
-
-      const options = {
-        sort: {
-          direction: direction,
-          field: this.dataset.field,
-        }
-      };
-
-      // let filterStr = filterView.getFilterStr();
-      if (filterView.filterStr) options.search = filterView.filterStr;
-
-      eventEmitter.emit(SORT, options);
-      console.log(this);
-    });
+    self.$btnAdd.on('click', self.triggerModalOpen);
+    self.$thead.on('click', '.sortable', self.triggerSort);
   }
 
   render(rows) {
     this.$tbody.html(
       rows.map(r => this.template(r)).join('')
     );
+  }
+
+  sort(direction, oldDirection, $icon) {
+    let self = this;
+
+    self.$thead.find('.sort').each(function () {
+      $(this).removeClass('sort-active');
+    });
+
+    if (!$icon.hasClass('sort-active')) $icon.addClass('sort-active');
+    
+    $icon.closest('.sortable').attr('data-sort', direction);
+
+    $icon.addClass(`sort-${direction}`);
+    $icon.removeClass(`sort-${oldDirection}`);
+
   }
 
   template({id, count, name, price}) {
@@ -62,7 +44,7 @@ export default class TableView {
             </td>
             <td>${price.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</td>
             <td>
-              <button type="button" class="btn btn-outline-success" data-modal="edit">Edit</button>
+              <button type="button" class="btn btn-outline-success" data-modal="change">Edit</button>
               <button type="button" class="btn btn-outline-danger btn-delete" data-modal="delete">Delete</button>
             </td>
         </tr>`;
@@ -73,12 +55,28 @@ export default class TableView {
     let modalId = $(e.target).data('modal');
     if (modalId === undefined) return;
 
+    let id = this.classList.contains('product') ? this.id : null;
+    let name = id ? $(this).find('.product-name').text() : null;
+
+    console.log(e.target);
     console.log('modal', modalId);
     console.log(this.id);
 
     eventEmitter.emit(OPEN, {
       modalId: modalId,
-      productId: this.id || null,
+      productId: id,
+      productName: name,
+    });
+  }
+
+  triggerSort() {
+    console.log(this);
+    eventEmitter.emit(RENDER, {
+      sort:  {
+        field: this.dataset.field,
+        oldDirection: this.dataset.sort,
+        $icon: $(this).children('.sort'),
+      }
     });
   }
 

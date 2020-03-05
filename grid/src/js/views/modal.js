@@ -1,6 +1,5 @@
 import $ from "jquery";
-import eventEmitter, {OPEN, CLOSE} from "../ee";
-import {createHTMLFragment} from '../view';
+import eventEmitter, {CLOSE} from "../ee";
 
 export default class ModalView {
     constructor(type) {
@@ -25,8 +24,8 @@ export default class ModalView {
       this.$modal.toggleClass('show');
     }
 
-    isOpen(type) {
-      return this.$modal[type].hasClass('show');
+    isOpen() {
+      return this.$modal.hasClass('show');
     }
 
 }
@@ -36,7 +35,7 @@ export class View extends ModalView {
     super();
     this.$modal = $('#view');
 
-    this.$modal.find('.btn-close').on('click', () => {
+    this.$modal.on('click', '.btn-close', () => {
       eventEmitter.emit(CLOSE, {modal: this.$modal.attr('id')});
     });
   }
@@ -73,26 +72,150 @@ export class View extends ModalView {
   }
 }
 
+export class Change extends ModalView {
+  constructor() {
+    super();
+    this.$modal = $('#change');
+
+    this.$modal.on('click', '.btn-close', () => {
+      eventEmitter.emit(CLOSE, {modal: this.$modal.attr('id')});
+    });
+  }
+
+  render(data) {
+    this.$modal.find('.modal-content').html(this.template(data));
+  }
+
+  template({id, name, email, count, price, delivery}) {
+    console.log('id:', id);
+    const template = `        
+    <div class="modal-header">
+      <h5 class="modal-title"> ${id ? 'Edit' : 'Add'} </h5>
+      <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form action="" class="form" name="add" id="formChange">
+        <fieldset>
+          <div class="form-group form-row">
+            <div class="col-7">
+              <input type="text" class="form-control" name="name" id="name" placeholder="Your name" value="${id ? name : ''}">
+            </div>
+            <div class="col align-self-center">
+              <label class="invalid-message" for="name"></label>
+            </div>
+          </div>
+          <div class="form-group form-row">
+            <div class="col-7">
+              <input type="email" class="form-control" name="email" id="email" placeholder="Supplier email" value="${id ? email : ''}">
+            </div>
+            <div class="col align-self-center">
+              <label class="invalid-message" for="email"></label>
+            </div>
+          </div>
+          <div class="form-group form-row">
+            <div class="col-5">
+              <input type="number" class="form-control" name="count" id="count" placeholder="Count" min = "0" value="${id ? count : ''}">
+            </div>
+            <div class="col align-self-center">
+              <label class="invalid-message" for="count"></label>
+            </div>
+          </div>
+          <div class="form-group form-row">
+            <div class="col-5">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="inputGroupPrepend">$</span>
+                </div>
+                <input type="number" class="form-control" name="price" id="price" placeholder="Price" value="${id ? price : ''}">
+              </div>
+            </div>
+            <div class="col align-self-center">
+              <label class="invalid-message" for="price"></label>
+            </div>
+          </div>
+          <div class="form-group">
+            <select class="form-control" id="delivery">
+              <option selected>None delivery</option>
+              <option value="country">Country</option>
+              <option value="city">City</option>
+            </select>
+          </div>
+          <div class="form-group mb-0">
+            <fieldset class="form-fieldset">
+              <legend class="form-legend">Country</legend>
+              <div class="custom-control custom-radio">
+                <input class="custom-control-input" type="radio" name="country" id="russia" value="russia" checked>
+                <label class="custom-control-label" for="russia"> Russia </label>
+              </div>
+              <div class="custom-control custom-radio">
+                <input class="custom-control-input" type="radio" name="country" id="holand" value="holand">
+                <label class="custom-control-label" for="holand"> Holand </label>
+              </div>
+            </fieldset>
+          </div>
+          <div class="form-group">
+            <fieldset class="form-fieldset">
+              <legend class="form-legend">City</legend>
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" name="city[]" id="saratov" value="saratov" checked>
+                <label class="custom-control-label" for="saratov">Saratov</label>
+              </div>
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" name="city[]" id="moscow" value="moscow">
+                <label class="custom-control-label" for="moscow">Moscow</label>
+              </div>
+            </fieldset>
+            <div class="invalid-feedback"></div>
+          </div>
+          <div class="form-group mb-0">
+            <button class="btn btn-success" type="button" id="saveProduct" data-product="">
+              <span class="spinner-grow spinner-grow-sm d-none" role="status" aria-hidden="true"></span>
+              Save
+            </button>
+          </div>
+        </fieldset>
+      </form>
+    </div>`;
+
+    return template;
+  }
+}
+
 export class Delete extends ModalView {
   constructor() {
     super();
     this.$modal = $('#delete');
     this.$deleteBtn = $('#deleteProduct');
 
-    this.$modal.find('.btn-close').on('click', () => {
+    this.$modal.on('click', '.btn-close', () => {
       eventEmitter.emit(CLOSE, {modal: this.$modal.attr('id')});
     });
   }
 
   render(data) {
-    this.$modal.find('.product-name').text(data.name);
-    this.$modal.find('.product-info').html(this.template(data));
+    this.$modal.find('.modal-content').html(this.template(data));
   }
 
-  setId(id) {
-    this.$deleteBtn.attr('data-product', id);
-  }
+  template(data) {
+    const template = `<div class="modal-header">
+        <h5 class="modal-title">Confirm delete</h5>
+        <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+      Are you sure you want to delete <b>${data.name}</b>?
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-light btn-close" data-dismiss="modal">Close</button>
+      <button class="btn btn-danger" type="button" id="deleteProduct" data-product="${data.id}">
+        <span class="spinner-grow spinner-grow-sm d-none" role="status" aria-hidden="true"></span>
+        Delete
+      </button>
+    </div>`;
 
-  template() {
+    return template;
   }
 }

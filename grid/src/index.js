@@ -10,33 +10,38 @@ import SpinnerView from './js/views/spinner';
 import ModalView from './js/views/modal';
 import ModalController from './js/controllers/modal';
 
-import {MVView, MVChange, MVDelete} from './js/views/modal';
-import {MCView, MCChange, MCDelete} from './js/controllers/modal';
+import FilterView from './js/views/filter';
+import FilterController from './js/controllers/filter';
 
-console.log(1, MVView);
+import FormView from './js/views/form';
+import FormController from './js/controllers/form';
+
+import AlertView from './js/views/alert';
+import AlertController from './js/controllers/alert';
 
 $(() => {
 
   let spinner = new SpinnerController(new SpinnerView());
+  let alert = new AlertController(new AlertView());
+  let filter = new FilterController(new FilterView());
+  let form = new FormController(new FormView());
 
   let modalView = new ModalController(new ModalView('view'));
   let modalDelete = new ModalController(new ModalView('delete'));
+  let modalChange = new ModalController(new ModalView('change'));
 
-  let view = new TableView();
-  let controller = new TableController(view);
+  let tableView = new TableView();
+  let tableController = new TableController(tableView);
 
-  // move компоненты
 });
 
-//
-import './js/controllers/form';
+$(window).on('beforeunload', function(){
+  delete sessionStorage.sort;
+  delete sessionStorage.filter;
+});
 
-// Q
-import FilterController from './js/controllers/filter';
-const filterController = new FilterController();
 
-import FilterView from './js/views/filter';
-export const filterView = new FilterView();
+
 
 
 

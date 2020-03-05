@@ -14,6 +14,9 @@ export const VALIDATE = 'form/VALIDATE'; // move to product ns?
 
 export const LOAD = 'dom/LOAD';
 export const SPINNER = 'dom/SPINNER';
+export const ALERT = 'dom/ALERT';
+
+export const RENDER = 'table/render';
 
 
 

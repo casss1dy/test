@@ -1,5 +1,4 @@
-import eventEmitter, {LOAD, SORT, SPINNER} from "../ee";
-import {Alert} from "../view";
+import eventEmitter, {RENDER, ALERT, SORT, SPINNER} from "../ee";
 import {getProductList} from "../models/model";
 import $ from "jquery";
 
@@ -7,21 +6,28 @@ export default class TableController {
   constructor(view) {
     let self = this;
     self.view = view;
-    self.init();
-  }
 
-  async init() {
-    let self = this;
-    await self.render();
+    self.render({});
 
-    eventEmitter.on(SORT, async ({search = '', sort}) => {
-      await self.init(search, sort);
+    eventEmitter.on(RENDER, async (options) => {
+      await self.render(options);
     });
   }
 
-  async render(search = '', sort = '') {
+  // async init() {
+  //   let self = this;
+  //   await self.render({});
+
+  //   eventEmitter.on(RENDER, async (options) => {
+  //     await self.render(options);
+  //   });
+  // }
+
+  async render({filter = null, sort = null}) {
     let self = this;
     let response;
+
+    console.log();
     
     console.log('klfdklfkd');
 
@@ -30,10 +36,8 @@ export default class TableController {
     try {
       response = await getProductList();
     } catch (e) {
-      new Alert({
-        type: 'danger',
-        error: e.status ? `${e.status} ${e.statusText}` : 'Something went wrong',
-      }).show();
+      let error = e.status ? `${e.status} ${e.statusText}` : 'Something went wrong';
+      eventEmitter.emit(ALERT, error);
       return;
     } finally {
       eventEmitter.emit(SPINNER);
@@ -41,31 +45,41 @@ export default class TableController {
 
     let data = response.Data;
 
-    if (!$.isEmptyObject(search)) {
-      data = response.Data.filter((item) => {
-        let name = item.name.toLowerCase();
-        return name.includes(search.toLowerCase());
-      })
+    if (filter) {
+      data = filter(data);
     }
 
-    if (!$.isEmptyObject(sort)) {
-      data = data.sort((a, b) => {
-        if (sort.direction === 'asc') {
-          if (a[sort.field] < b[sort.field]) return -1;
-          if (a[sort.field] > b[sort.field]) return 1;
-        } else {
-          if (a[sort.field] < b[sort.field]) return 1;
-          if (a[sort.field] > b[sort.field]) return -1;
-        }
-
-        return 0;
-      });
-
+    if (sort) {
+      data = self.sort(data, sort);
     }
 
     this.view.render(data);
 
     console.log(data);
+  }
+
+  sort(data, {field, oldDirection, $icon}) {
+    let self = this;
+
+    let direction = oldDirection === 'desc' || !oldDirection ? 'asc' : 'desc';
+
+    sessionStorage.sort = JSON.stringify({col: field, dir: direction});
+
+    self.view.sort(direction, oldDirection, $icon);
+
+    let sortedData = data.sort((a, b) => {
+      if (direction === 'asc') {
+        if (a[field] < b[field]) return -1;
+        if (a[field] > b[field]) return 1;
+      } else {
+        if (a[field] < b[field]) return 1;
+        if (a[field] > b[field]) return -1;
+      }
+
+      return 0;
+    });
+
+    return sortedData;
   }
 
 }

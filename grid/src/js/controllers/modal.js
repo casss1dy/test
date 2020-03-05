@@ -1,6 +1,5 @@
-import eventEmitter, {OPEN, CLOSE, SPINNER} from "../ee";
 import {getProductById} from "../models/model";
-import $ from "jquery";
+import eventEmitter, {OPEN, CLOSE, SPINNER} from "../ee";
 
 export default class ModalController {
   constructor(view) {
@@ -9,6 +8,10 @@ export default class ModalController {
 
     if (modalId === 'view') {
       modalController = new ModalView(view);
+    }
+
+    if (modalId === 'change') {
+      modalController = new ModalChange(view);
     }
 
     if (modalId === 'delete') {
@@ -24,6 +27,8 @@ class ModalView {
     let self = this;
     self.view = view;
 
+
+    // Q - вынести 
     eventEmitter.on(OPEN, async ({modalId, productId}) => {
       if (modalId === 'view') {
         await self.show(productId);
@@ -59,10 +64,44 @@ class ModalChange {
   constructor(view) {
     let self = this;
     self.view = view;
+
+    eventEmitter.on(OPEN, ({modalId, ...product}) => {
+      console.log(modalId);
+      if (modalId === 'change') {
+        self.show(product);
+      }
+    });
+
+    eventEmitter.on(CLOSE, ({modal}) => {
+      console.log(modal);
+      if (modal === 'change') {
+        self.view.toggle(true);
+      }
+    });
   }
 
-  show(productId) {
-    self.view.toggle(true);
+  async show({productId, productName}) {
+    let self = this;
+    // console.log(product);
+
+    if (productId) {
+      let self = this;
+
+      eventEmitter.emit(SPINNER);
+  
+      let response;
+      try {
+        response = await getProductById(productId);
+      } catch (e) {}
+  
+      self.view.render(response.Data);
+      self.view.toggle();
+  
+      eventEmitter.emit(SPINNER, false);
+    } else {
+      self.view.render({});
+      self.view.toggle(true);
+    }
   }
 }
 
@@ -71,22 +110,24 @@ class ModalDelete {
     let self = this;
     self.view = view;
 
-    eventEmitter.on(OPEN, async ({modalId, productId}) => {
+    eventEmitter.on(OPEN, ({modalId, ...product}) => {
       if (modalId === 'delete') {
-        await self.show(productId);
+        self.show(product);
       }
     });
 
     eventEmitter.on(CLOSE, ({modal}) => {
+      console.log(modal);
       if (modal === 'delete') {
         self.view.toggle(true);
       }
     });
   }
 
-  show(productId) {
+  show(product) {
     let self = this;
-    self.view.setId(productId);
+
+    self.view.render({id: product.productId, name: product.productName});
     self.view.toggle(true);
   }
 }
