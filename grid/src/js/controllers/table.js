@@ -14,15 +14,6 @@ export default class TableController {
     });
   }
 
-  // async init() {
-  //   let self = this;
-  //   await self.render({});
-
-  //   eventEmitter.on(RENDER, async (options) => {
-  //     await self.render(options);
-  //   });
-  // }
-
   async render({filter = null, sort = null}) {
     let self = this;
     let response;
@@ -45,12 +36,17 @@ export default class TableController {
 
     let data = response.Data;
 
-    if (filter) {
-      data = filter(data);
+    if (filter || self.filter) {
+      if (!self.filter) self.filter = filter;
+      data = self.filter(data);
     }
 
     if (sort) {
       data = self.sort(data, sort);
+    } else {
+      if (sessionStorage.sort) {
+        data = self.sort(data, JSON.parse(sessionStorage.sort));
+      }
     }
 
     this.view.render(data);
@@ -58,14 +54,14 @@ export default class TableController {
     console.log(data);
   }
 
-  sort(data, {field, oldDirection, $icon}) {
+  sort(data, {field, oldDirection, direction, $icon}) {
     let self = this;
 
-    let direction = oldDirection === 'desc' || !oldDirection ? 'asc' : 'desc';
-
-    sessionStorage.sort = JSON.stringify({col: field, dir: direction});
-
-    self.view.sort(direction, oldDirection, $icon);
+    if (!direction) {
+      direction = oldDirection === 'desc' || !oldDirection ? 'asc' : 'desc';
+      sessionStorage.sort = JSON.stringify({field: field, direction: direction});
+      self.view.sort(direction, oldDirection, $icon);
+    } 
 
     let sortedData = data.sort((a, b) => {
       if (direction === 'asc') {
