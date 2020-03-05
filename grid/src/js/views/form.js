@@ -5,7 +5,7 @@ export default class FormView {
   constructor() {
     let self = this;
 
-    $('body').on('click', '#saveProduct', (e) => self.triggerSaveProduct(e));
+    $('body').on('click', '#saveProduct', () => self.triggerSaveProduct());
     $('body').on('input focusout', '#formChange', (e) => self.triggerValidate(e));
     $('body').on('click', '#deleteProduct', (e) => self.triggerDeleteProduct(e));
 
@@ -48,8 +48,13 @@ export default class FormView {
   triggerSaveProduct() {
     let self = this;
 
+    if (!self.$saveBtn) self.init();
     let data = self.$formChange.serializeArray();
-    eventEmitter.emit(ADD, { data: data });
+    console.log('trigger', data);
+
+    // eventEmitter.emit(VALIDATE, data);
+
+    eventEmitter.emit(ADD, data);
   }
 
   triggerDeleteProduct(e) {
@@ -59,11 +64,10 @@ export default class FormView {
   }
 
   triggerValidate(e) {
-    console.log(e.target.name, e.target.value);
-    eventEmitter.emit(VALIDATE, {
+    eventEmitter.emit(VALIDATE, [{
       name: e.target.name,
       value : e.target.value,
-    });
+    }]);
   }
 
 }

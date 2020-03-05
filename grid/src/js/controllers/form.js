@@ -1,5 +1,5 @@
 import {deleteProduct, addProduct} from '../models/model.js';
-import eventEmitter, {ADD, VALIDATE, DELETE, RENDER, CLOSE} from "../ee";
+import eventEmitter, {ADD, VALIDATE, DELETE, RENDER, CLOSE, ALERT} from "../ee";
 
 import $ from "jquery"; // TODO убрать
 
@@ -8,21 +8,27 @@ export default class FormController {
     let self = this;
     self.view = view;
     
-    eventEmitter.on(ADD, async ({data}) => await self.addProduct({data}));
+    eventEmitter.on(ADD, async (data) => await self.addProduct(data));
     eventEmitter.on(VALIDATE, (input) => self.validate(input));
     eventEmitter.on(DELETE, async ({productId}) => await self.deleteProduct({productId}));
   }
 
-  async addProduct({data}) {
+  async addProduct(data) {
     let self = this;
 
     if (!self.view.$saveBtn) self.view.init();
+
+    let isValidated = self.validate(data);
+    if (!isValidated) {
+      eventEmitter.emit(ALERT, 'Check the correctness');
+      return;
+    }
 
     self.view.toggleBtnDisable(self.view.$saveBtn);
     const dataProcessed = dataProcessing(data);
     console.log(dataProcessed);
   
-    // return;
+    return;
   
     try {
       await addProduct(JSON.stringify(dataProcessed));
@@ -35,7 +41,6 @@ export default class FormController {
     }
 
     eventEmitter.emit(CLOSE, {modal: 'change'});
-    
     eventEmitter.emit(RENDER, {});
   }
 
@@ -64,10 +69,11 @@ export default class FormController {
     eventEmitter.emit(RENDER, {});
   }
 
-  validate(input) {
+  validate(arInput) {
 
-    console.log(input);
     let self = this;
+    let isValidated = true;
+    if (!self.view.$formChange) self.view.init();
 
     const rules = {
       name(value) {
@@ -77,39 +83,53 @@ export default class FormController {
         if (value.length > 15) error.push('Max length 15 characters');
         if (!value.trim()) error.push('Should consist not only spaces');
     
-        if (error.length) {
-          throw new Error(error.join('<br>'));
-        }
+        return error.join('<br>');
       },
     
       email(value) {
+        let error = [];
         let pattern = /^[a-z0-9_-]+@[a-z0-9-]+\.[a-z]{2,6}$/i;
         // debugger;
-        if (value.search(pattern) == -1)
-          throw new Error('Should be in email formate');
+        if (value.search(pattern) == -1) error.push('Should be in email format');
+    
+        return error.join('<br>');
       },
     
       count(value) {
+        let error = [];
         // TODO . + -, макс колв-о символов в константу
-        if (parseFloat(value) === 0) throw new Error('Should be non zero');
-        if (!+value) throw new Error('Should be not empty');
-        if (value.length > 10) throw new Error('Max count is 9,999,999,999');
+        if (parseFloat(value) === 0) error.push('Should be non zero');
+        if (!+value) error.push('Should be not empty');
+        if (value.length > 10) error.push('Max count is 9,999,999,999');
+
+        return error.join('<br>');
       },
     
       price(value) {
-        if (value.length > 10) throw new Error('Max price is 9,999,999,999');
+        let error = [];
+
+        if (value.length > 10) error.push('Max price is 9,999,999,999');
+
+        return error.join('<br>');
       }
     };
 
-    try {
-      rules[input.name](input.value);
-    } catch(e) {
-      console.log(e);
-      self.view.toggleValidationError(input.name, e.message);
-      return;
-    }
-  
-    self.view.toggleValidationError(input.name);
+    arInput.forEach((input) => {
+      if (~Object.keys(rules).indexOf(input.name)) {
+        self.view.toggleValidationError(input.name);
+        
+        const errors = rules[input.name](input.value);
+        
+        if (errors) {
+          self.view.toggleValidationError(input.name, errors);
+          isValidated = false;
+        }
+      }
+    });
+
+    console.log('???', isValidated);
+
+    return isValidated;
   }
 }  
 

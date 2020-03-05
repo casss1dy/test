@@ -13,7 +13,7 @@ export default class alertView {
   }
 
   template(error) {
-    const template = `<strong> ${error} </strong><br> Pls try again later`;
+    const template = `<strong> ${error} </strong><br> Pls try again`;
     return template;
   }
 }

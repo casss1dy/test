@@ -18,10 +18,6 @@ export default class TableController {
     let self = this;
     let response;
 
-    console.log();
-    
-    console.log('klfdklfkd');
-
     eventEmitter.emit(SPINNER);
 
     try {
