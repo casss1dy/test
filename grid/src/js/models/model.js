@@ -21,6 +21,7 @@ export function addProduct(data) {
 }
 
 export function updateProduct(productId, data) {
+  console.log(11111111, data);
   let endpointURL = getEndpointURL('update', productId);
   return getResponse(endpointURL, 'PUT', data);
 }
@@ -36,7 +37,7 @@ function getResponse (endpointURL, type = 'GET', data = null) {
   };
 
 
-  if (type === 'POST') {
+  if (type === 'POST' || type === 'PUT') {
     settings.data = data;
     settings.contentType = 'application/json';
     settings.processData = false;

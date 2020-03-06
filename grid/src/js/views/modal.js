@@ -6,7 +6,6 @@ export default class ModalView {
       let self = this;
       self.$backdrop = $('#pageBackdrop');
 
-      console.log(type);
       let modalView;
       if (type === 'view') modalView = new View();
       if (type === 'delete') modalView = new Delete();
@@ -16,16 +15,15 @@ export default class ModalView {
     }
 
     toggle(isToggleBackdrop = false) {
-      console.log('toggle');
       if (isToggleBackdrop) {
         $('body').toggleClass('modal-open');
         this.$backdrop.toggleClass('d-none');
       }
-      this.$modal.toggleClass('show');
-    }
 
-    isOpen() {
-      return this.$modal.hasClass('show');
+      // debugger;
+
+      this.$modal.toggleClass('show');
+      this.$modal.find('input').first().focus();
     }
 
 }
@@ -47,7 +45,7 @@ export class View extends ModalView {
 
   template({email, count, price, delivery}) {
     let deliveryInfo;
-    if (delivery.country === null && delivery.city === null) deliveryInfo = 'No'; //TODO see
+    if (!delivery || delivery.country === null && delivery.city === null) deliveryInfo = 'No'; //TODO see
     else if (Array.isArray(delivery.city))
       deliveryInfo = `${delivery.country} / ${delivery.city.join(', ')}`;
 
@@ -84,10 +82,15 @@ export class Change extends ModalView {
 
   render(data) {
     this.$modal.find('.modal-content').html(this.template(data));
+    this.$modal.find('input').first().focus();
   }
 
   template({id, name, email, count, price, delivery}) {
-    console.log('id:', id);
+    console.log(delivery);
+
+    let hasDelivery;
+    if (delivery && delivery.country !== null) hasDelivery = true;
+
     const template = `        
     <div class="modal-header">
       <h5 class="modal-title"> ${id ? 'Edit' : 'Add'} </h5>
@@ -135,27 +138,31 @@ export class Change extends ModalView {
               <label class="invalid-message" for="price"></label>
             </div>
           </div>
-          <div class="form-group">
-            <select class="form-control" id="delivery">
-              <option selected>None delivery</option>
-              <option value="country">Country</option>
-              <option value="city">City</option>
-            </select>
+          <div class="form-group form-row">
+            <div class="col-7">
+              <select class="form-control" id="delivery">
+                <option ${!hasDelivery ? 'selected' : ''}>None delivery</option>
+                <option value="country" ${hasDelivery ? 'selected' : ''}>Country</option>
+                <option value="city">City</option>
+              </select>
+            </div>
           </div>
-          <div class="form-group mb-0">
-            <fieldset class="form-fieldset">
-              <legend class="form-legend">Country</legend>
-              <div class="custom-control custom-radio">
-                <input class="custom-control-input" type="radio" name="country" id="russia" value="russia" checked>
-                <label class="custom-control-label" for="russia"> Russia </label>
-              </div>
-              <div class="custom-control custom-radio">
-                <input class="custom-control-input" type="radio" name="country" id="holand" value="holand">
-                <label class="custom-control-label" for="holand"> Holand </label>
-              </div>
-            </fieldset>
+          <div class="form-group form-row ${!hasDelivery ? 'd-none' : ''}">
+            <div class="col-7">
+              <fieldset class="form-fieldset">
+                <legend class="form-legend">Country</legend>
+                <div class="custom-control custom-radio">
+                  <input class="custom-control-input" type="radio" name="country" id="Russia" value="Russia" ${hasDelivery && delivery.country === 'Russia' ? 'checked' : ''}>
+                  <label class="custom-control-label" for="Russia"> Russia </label>
+                </div>
+                <div class="custom-control custom-radio">
+                  <input class="custom-control-input" type="radio" name="country" id="Japan" value="Japan" ${hasDelivery && delivery.country === 'Japan' ? 'checked' : ''}>
+                  <label class="custom-control-label" for="Japan"> Japan </label>
+                </div>
+              </fieldset>
+            </div>
           </div>
-          <div class="form-group">
+          <div class="form-group d-none">
             <fieldset class="form-fieldset">
               <legend class="form-legend">City</legend>
               <div class="custom-control custom-checkbox">
@@ -170,7 +177,7 @@ export class Change extends ModalView {
             <div class="invalid-feedback"></div>
           </div>
           <div class="form-group mb-0">
-            <button class="btn btn-success" type="button" id="saveProduct" data-product="">
+            <button class="btn btn-success" type="button" id="saveProduct" data-product="${id ? id : ''}">
               <span class="spinner-grow spinner-grow-sm d-none" role="status" aria-hidden="true"></span>
               Save
             </button>

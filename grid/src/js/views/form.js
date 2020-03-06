@@ -9,6 +9,10 @@ export default class FormView {
     $('body').on('input focusout', '#formChange', (e) => self.triggerValidate(e));
     $('body').on('click', '#deleteProduct', (e) => self.triggerDeleteProduct(e));
 
+    this.delivery = {
+      country: ['Russia', 'Japan'],
+      cities: [['Saratov', 'Moscow'], ['Osaka', 'Tokyo']],
+    }
   }
 
   init() {
@@ -28,7 +32,7 @@ export default class FormView {
     // debugger;
     let $error = self.$formChange.find(`label[for=${input}]`);
     let $input = self.$formChange.find(`#${input}`);
-  
+
     $error.html(error);
 
     if (error && !$input.hasClass('invalid-input')) $input.addClass('invalid-input');
@@ -39,7 +43,7 @@ export default class FormView {
     console.log($btn);
 
     let isDisable = $btn.prop('disabled');
-  
+
     $btn.closest('fieldset').prop('disabled', !isDisable);
     $btn.prop('disabled', !isDisable);
     $btn.children('.spinner-grow').toggleClass('d-none');
@@ -50,16 +54,15 @@ export default class FormView {
 
     if (!self.$saveBtn) self.init();
     let data = self.$formChange.serializeArray();
-    console.log('trigger', data);
 
-    // eventEmitter.emit(VALIDATE, data);
+    let product = self.$saveBtn.attr('data-product') ? self.$saveBtn.attr('data-product') : null;
 
-    eventEmitter.emit(ADD, data);
+    eventEmitter.emit(ADD, {data, product});
   }
 
   triggerDeleteProduct(e) {
-    eventEmitter.emit(DELETE, { 
-      productId: e.target.dataset.product, 
+    eventEmitter.emit(DELETE, {
+      productId: e.target.dataset.product,
     });
   }
 

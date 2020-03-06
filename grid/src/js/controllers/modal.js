@@ -27,8 +27,6 @@ class ModalView {
     let self = this;
     self.view = view;
 
-
-    // Q - вынести 
     eventEmitter.on(OPEN, async ({modalId, productId}) => {
       if (modalId === 'view') {
         await self.show(productId);
@@ -88,15 +86,15 @@ class ModalChange {
       let self = this;
 
       eventEmitter.emit(SPINNER);
-  
+
       let response;
       try {
         response = await getProductById(productId);
       } catch (e) {}
-  
+
       self.view.render(response.Data);
       self.view.toggle();
-  
+
       eventEmitter.emit(SPINNER, false);
     } else {
       self.view.render({});

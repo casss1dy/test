@@ -28,7 +28,7 @@ export default class TableView {
     });
 
     if (!$icon.hasClass('sort-active')) $icon.addClass('sort-active');
-    
+
     $icon.closest('.sortable').attr('data-sort', direction);
 
     $icon.addClass(`sort-${direction}`);
@@ -40,7 +40,7 @@ export default class TableView {
     const template = `<tr id="${id}" class="product">
             <td>
               <span class="product-name" data-modal="view">${name}</span>
-              <span class="badge badge-warning product-count">${count}</span>
+              <span class="badge badge-info product-count">${count}</span>
             </td>
             <td>${price.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</td>
             <td>
