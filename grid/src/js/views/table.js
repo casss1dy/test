@@ -58,6 +58,8 @@ export default class TableView {
     let id = this.classList.contains('product') ? this.id : null;
     let name = id ? $(this).find('.product-name').text() : null;
 
+    // $(this).find('button').prop('disabled', true);
+
     console.log(e.target);
     console.log('modal', modalId);
     console.log(this.id);

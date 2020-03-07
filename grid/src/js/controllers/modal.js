@@ -1,5 +1,5 @@
 import {getProductById} from "../models/model";
-import eventEmitter, {OPEN, CLOSE, SPINNER} from "../ee";
+import eventEmitter, {OPEN, CLOSE, SPINNER, RENDER_FORM, ALERT} from "../ee";
 
 export default class ModalController {
   constructor(view) {
@@ -18,6 +18,21 @@ export default class ModalController {
       modalController = new ModalDelete(view);
     }
 
+    modalController.type = modalId;
+
+    eventEmitter.on(OPEN, ({modalId, ...product}) => {
+      if (modalId === modalController.type) {
+        modalController.show(product);
+      }
+    });
+
+    eventEmitter.on(CLOSE, ({modal}) => {
+      // debugger;
+      if (modal === modalController.type && modalController.view.isOpen()) {
+        modalController.view.toggle(true);
+      }
+    });
+
     return modalController;
   }
 }
@@ -26,18 +41,6 @@ class ModalView {
   constructor(view) {
     let self = this;
     self.view = view;
-
-    eventEmitter.on(OPEN, async ({modalId, productId}) => {
-      if (modalId === 'view') {
-        await self.show(productId);
-      }
-    });
-
-    eventEmitter.on(CLOSE, ({modal}) => {
-      if (modal === 'view') {
-        self.view.toggle(true);
-      }
-    });
   }
 
   async show(productId) {
@@ -62,20 +65,6 @@ class ModalChange {
   constructor(view) {
     let self = this;
     self.view = view;
-
-    eventEmitter.on(OPEN, ({modalId, ...product}) => {
-      console.log(modalId);
-      if (modalId === 'change') {
-        self.show(product);
-      }
-    });
-
-    eventEmitter.on(CLOSE, ({modal}) => {
-      console.log(modal);
-      if (modal === 'change') {
-        self.view.toggle(true);
-      }
-    });
   }
 
   async show({productId, productName}) {
@@ -90,14 +79,27 @@ class ModalChange {
       let response;
       try {
         response = await getProductById(productId);
-      } catch (e) {}
+      } catch (e) {
+        let error = e.status ? `${e.status} ${e.statusText}` : 'Something went wrong';
+        eventEmitter.emit(ALERT, error);
+        return;
+      } finally {
+        eventEmitter.emit(SPINNER, false);
+      }
 
-      self.view.render(response.Data);
+      eventEmitter.emit(RENDER_FORM, {
+        $modal: self.view.$modal,
+        data: response.Data,
+      });
+
       self.view.toggle();
 
-      eventEmitter.emit(SPINNER, false);
     } else {
-      self.view.render({});
+      eventEmitter.emit(RENDER_FORM, {
+        $modal: self.view.$modal,
+        data: {},
+      });
+
       self.view.toggle(true);
     }
   }
@@ -107,22 +109,11 @@ class ModalDelete {
   constructor(view) {
     let self = this;
     self.view = view;
-
-    eventEmitter.on(OPEN, ({modalId, ...product}) => {
-      if (modalId === 'delete') {
-        self.show(product);
-      }
-    });
-
-    eventEmitter.on(CLOSE, ({modal}) => {
-      console.log(modal);
-      if (modal === 'delete') {
-        self.view.toggle(true);
-      }
-    });
   }
 
   show(product) {
+    console.log(this);
+
     let self = this;
 
     self.view.render({id: product.productId, name: product.productName});

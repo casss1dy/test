@@ -32,10 +32,18 @@ export default class TableController {
 
     let data = response.Data;
 
-    if (filter || self.filter) {
-      if (!self.filter) self.filter = filter;
-      data = self.filter(data);
+    if (filter) {
+      self.filter = filter;
+    } else if (filter === '') {
+      self.filter = null;
     }
+
+    if (self.filter) data = self.filter(data);
+
+    // if (filter || self.filter) {
+    //   if (!self.filter) self.filter = filter;
+    //   data = self.filter(data);
+    // }
 
     if (sort) {
       data = self.sort(data, sort);
@@ -57,7 +65,7 @@ export default class TableController {
       direction = oldDirection === 'desc' || !oldDirection ? 'asc' : 'desc';
       sessionStorage.sort = JSON.stringify({field: field, direction: direction});
       self.view.sort(direction, oldDirection, $icon);
-    } 
+    }
 
     let sortedData = data.sort((a, b) => {
       if (direction === 'asc') {

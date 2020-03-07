@@ -1,5 +1,5 @@
 import {deleteProduct, addProduct, updateProduct} from '../models/model.js';
-import eventEmitter, {ADD, VALIDATE, DELETE, RENDER, CLOSE, ALERT} from "../ee";
+import eventEmitter, {ADD, VALIDATE, DELETE, RENDER, RENDER_FORM, CLOSE, ALERT} from "../ee";
 
 import $ from "jquery"; // TODO убрать
 
@@ -11,20 +11,23 @@ export default class FormController {
     eventEmitter.on(ADD, async ({data, product}) => await self.addProduct({data, product}));
     eventEmitter.on(VALIDATE, (input) => self.validate(input));
     eventEmitter.on(DELETE, async ({productId}) => await self.deleteProduct({productId}));
+    eventEmitter.on(RENDER_FORM, async (params) => self.render(params));
   }
 
   async addProduct({data, product}) {
+
+    console.log(product);
     let self = this;
 
-    if (!self.view.$saveBtn) self.view.init();
+    // if (!self.view.$saveBtn) self.view.init();
 
-    // let isValidated = self.validate(data);
-    // if (!isValidated) {
-    //   eventEmitter.emit(ALERT, 'Check the correctness');
-    //   return;
-    // }
+    let isValidated = self.validate(data);
+    if (!isValidated) {
+      eventEmitter.emit(ALERT, 'Check the correctness');
+      return;
+    }
 
-    self.view.toggleBtnDisable(self.view.$saveBtn);
+    self.view.toggleBtnDisable(self.view.$saveBtn, product);
     const dataProcessed = dataProcessing(data);
     console.log(dataProcessed);
 
@@ -56,7 +59,7 @@ export default class FormController {
 
     if (!self.view.$deleteBtn) self.view.init();
 
-    self.view.toggleBtnDisable(self.view.$deleteBtn);
+    self.view.toggleBtnDisable(self.view.$deleteBtn, productId);
 
     // return;
 
@@ -71,7 +74,6 @@ export default class FormController {
     }
 
     self.view.toggleBtnDisable(self.view.$deleteBtn);
-
     eventEmitter.emit(RENDER, {});
   }
 
@@ -79,7 +81,7 @@ export default class FormController {
 
     let self = this;
     let isValidated = true;
-    if (!self.view.$formChange) self.view.init();
+    // if (!self.view.$formChange) self.view.init();
 
     const rules = {
       name(value) {
@@ -138,6 +140,14 @@ export default class FormController {
     console.log('???', isValidated);
 
     return isValidated;
+  }
+
+  render({$modal, data}) {
+    let self = this;
+
+    self.view.render($modal, data);
+
+
   }
 }
 

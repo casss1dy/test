@@ -1,5 +1,5 @@
 import $ from "jquery";
-import eventEmitter, {CLOSE} from "../ee";
+import eventEmitter, {CLOSE, RENDER_FORM} from "../ee";
 
 export default class ModalView {
     constructor(type) {
@@ -22,8 +22,16 @@ export default class ModalView {
 
       // debugger;
 
+      $('.page button, .page input').attr('tabindex', (index, attr) => attr == -1 ? null  : -1);
+
       this.$modal.toggleClass('show');
       this.$modal.find('input').first().focus();
+
+      console.log(this.$modal);
+    }
+
+    isOpen() {
+      return !!this.$modal.hasClass('show');
     }
 
 }
@@ -78,115 +86,6 @@ export class Change extends ModalView {
     this.$modal.on('click', '.btn-close', () => {
       eventEmitter.emit(CLOSE, {modal: this.$modal.attr('id')});
     });
-  }
-
-  render(data) {
-    this.$modal.find('.modal-content').html(this.template(data));
-    this.$modal.find('input').first().focus();
-  }
-
-  template({id, name, email, count, price, delivery}) {
-    console.log(delivery);
-
-    let hasDelivery;
-    if (delivery && delivery.country !== null) hasDelivery = true;
-
-    const template = `        
-    <div class="modal-header">
-      <h5 class="modal-title"> ${id ? 'Edit' : 'Add'} </h5>
-      <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    <div class="modal-body">
-      <form action="" class="form" name="add" id="formChange">
-        <fieldset>
-          <div class="form-group form-row">
-            <div class="col-7">
-              <input type="text" class="form-control" name="name" id="name" placeholder="Your name" value="${id ? name : ''}">
-            </div>
-            <div class="col align-self-center">
-              <label class="invalid-message" for="name"></label>
-            </div>
-          </div>
-          <div class="form-group form-row">
-            <div class="col-7">
-              <input type="email" class="form-control" name="email" id="email" placeholder="Supplier email" value="${id ? email : ''}">
-            </div>
-            <div class="col align-self-center">
-              <label class="invalid-message" for="email"></label>
-            </div>
-          </div>
-          <div class="form-group form-row">
-            <div class="col-5">
-              <input type="number" class="form-control" name="count" id="count" placeholder="Count" min = "0" value="${id ? count : ''}">
-            </div>
-            <div class="col align-self-center">
-              <label class="invalid-message" for="count"></label>
-            </div>
-          </div>
-          <div class="form-group form-row">
-            <div class="col-5">
-              <div class="input-group">
-                <div class="input-group-prepend">
-                  <span class="input-group-text" id="inputGroupPrepend">$</span>
-                </div>
-                <input type="number" class="form-control" name="price" id="price" placeholder="Price" value="${id ? price : ''}">
-              </div>
-            </div>
-            <div class="col align-self-center">
-              <label class="invalid-message" for="price"></label>
-            </div>
-          </div>
-          <div class="form-group form-row">
-            <div class="col-7">
-              <select class="form-control" id="delivery">
-                <option ${!hasDelivery ? 'selected' : ''}>None delivery</option>
-                <option value="country" ${hasDelivery ? 'selected' : ''}>Country</option>
-                <option value="city">City</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group form-row ${!hasDelivery ? 'd-none' : ''}">
-            <div class="col-7">
-              <fieldset class="form-fieldset">
-                <legend class="form-legend">Country</legend>
-                <div class="custom-control custom-radio">
-                  <input class="custom-control-input" type="radio" name="country" id="Russia" value="Russia" ${hasDelivery && delivery.country === 'Russia' ? 'checked' : ''}>
-                  <label class="custom-control-label" for="Russia"> Russia </label>
-                </div>
-                <div class="custom-control custom-radio">
-                  <input class="custom-control-input" type="radio" name="country" id="Japan" value="Japan" ${hasDelivery && delivery.country === 'Japan' ? 'checked' : ''}>
-                  <label class="custom-control-label" for="Japan"> Japan </label>
-                </div>
-              </fieldset>
-            </div>
-          </div>
-          <div class="form-group d-none">
-            <fieldset class="form-fieldset">
-              <legend class="form-legend">City</legend>
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" name="city[]" id="saratov" value="saratov" checked>
-                <label class="custom-control-label" for="saratov">Saratov</label>
-              </div>
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" name="city[]" id="moscow" value="moscow">
-                <label class="custom-control-label" for="moscow">Moscow</label>
-              </div>
-            </fieldset>
-            <div class="invalid-feedback"></div>
-          </div>
-          <div class="form-group mb-0">
-            <button class="btn btn-success" type="button" id="saveProduct" data-product="${id ? id : ''}">
-              <span class="spinner-grow spinner-grow-sm d-none" role="status" aria-hidden="true"></span>
-              Save
-            </button>
-          </div>
-        </fieldset>
-      </form>
-    </div>`;
-
-    return template;
   }
 }
 

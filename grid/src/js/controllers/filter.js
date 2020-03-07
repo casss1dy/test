@@ -15,6 +15,8 @@ export default class FilterController {
       filter = this.stripTags(filter);
     }
 
+    console.log(filter);
+
     self.view.filterStr = filter;
     self.view.toggleResetBtn();
 
@@ -28,15 +30,15 @@ export default class FilterController {
   filter(str) {
     sessionStorage.filter = str;
 
+    if (!str) return '';
+
     return function(data) {
       return data.filter((item) => {
         let name = item.name.toLowerCase();
         return name.includes(str.toLowerCase());
       })
-    } 
+    }
   }
 }
-
-// todo фильтр при нажатой сортировке
 
 
