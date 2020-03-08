@@ -30,8 +30,6 @@ export default class FormController {
     self.view.toggleBtnDisable(self.view.$saveBtn, product);
     const dataProcessed = dataProcessing(data);
 
-    return;
-
     try {
       if (product) {
         await updateProduct(product, JSON.stringify(dataProcessed));
@@ -68,9 +66,9 @@ export default class FormController {
       return;
     } finally {
       eventEmitter.emit(CLOSE, {modal: 'delete'});
+      self.view.toggleBtnDisable(self.view.$deleteBtn);
     }
 
-    self.view.toggleBtnDisable(self.view.$deleteBtn);
     eventEmitter.emit(RENDER, {});
   }
 
@@ -195,15 +193,6 @@ export default class FormController {
 
         return error.join('<br>');
       },
-
-      // city(value) {
-      //   let error = [];
-      //
-      //   let delivery = JSON.parse(sessionStorage.delivery);
-      //   delivery.city.forEach((obj) => {
-      //     if (obj.hasOwnProperty(value))
-      //   });
-      // }
     };
 
     arInput.forEach((input) => {
