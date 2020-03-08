@@ -9,7 +9,7 @@ export default class FormController {
     self.view = view;
 
     eventEmitter.on(ADD, async ({data, product}) => await self.addProduct({data, product}));
-    eventEmitter.on(VALIDATE, (input) => self.validate(input));
+    eventEmitter.on(VALIDATE, (input) => {self.validate(input)});
     eventEmitter.on(DELETE, async ({productId}) => await self.deleteProduct({productId}));
     eventEmitter.on(RENDER_FORM, async (params) => self.render(params));
   }
@@ -24,10 +24,12 @@ export default class FormController {
     let isValidated = self.validate(data);
     if (!isValidated) {
       eventEmitter.emit(ALERT, 'Check the correctness');
+      self.view.setInvalidFocus();
       return;
     }
 
     self.view.toggleBtnDisable(self.view.$saveBtn, product);
+    console.log(data);
     const dataProcessed = dataProcessing(data);
     console.log(dataProcessed);
 
@@ -77,7 +79,85 @@ export default class FormController {
     eventEmitter.emit(RENDER, {});
   }
 
+  render({$modal, data}) {
+    let self = this;
+
+    const deliveryAll = {
+      country: ['Russia', 'Japan'],
+      city: [{
+        'Saratov': false,
+        'Moscow': false,
+        'Sochi': false
+      },
+        {
+          'Osaka': false,
+          'Tokyo': false,
+        }
+      ],
+    };
+
+    sessionStorage.delivery = JSON.stringify(deliveryAll);
+    data.deliveryTemplate = self.getDelivery(data.delivery);
+    self.view.render($modal, data);
+  }
+
+  changeDelivery(input) {
+    let self = this;
+
+    let info = self.view.changeDelivery();
+
+    if (!info) return;
+
+    if (info.cityList) {
+      let deliveryAll = JSON.parse(sessionStorage.delivery);
+      let countryId = deliveryAll.country.indexOf(info.country);
+      deliveryAll.city[countryId] = info.cityList;
+
+      sessionStorage.delivery = JSON.stringify(deliveryAll);
+    } else if (info.country) {
+
+      let deliveryTemplate = self.getDelivery({country: info.country});
+      self.view.updateCityList(deliveryTemplate.cityList);
+    }
+
+  };
+
+  getDelivery(delivery) {
+    let self = this;
+    const deliveryAll = JSON.parse(sessionStorage.delivery);
+
+    if ($.isEmptyObject(delivery) || delivery.country === null) {
+      delivery = {
+        country: deliveryAll.country[0],
+        city: [],
+      };
+    }
+
+    let i = deliveryAll.country.indexOf(delivery.country);
+
+    const countryList = deliveryAll.country.map(item => self.view.templateCountry(item, delivery.country)).join('');
+
+    const cityList = Object.keys(deliveryAll.city[i]).map(item => {
+      let checked;
+
+      if (delivery.city) {
+        checked = ~$.inArray(item, delivery.city) ? 'checked' : '';
+        if (checked) deliveryAll.city[i][item] = true;
+      } else {
+        checked = deliveryAll.city[i][item] ? 'checked' : '';
+      }
+
+      return self.view.templateCity(item, checked);
+    }).join('');
+
+    sessionStorage.delivery = JSON.stringify(deliveryAll);
+
+    return {countryList, cityList};
+  }
+
   validate(arInput) {
+    
+    console.log(4538783758375, arInput );
 
     let self = this;
     let isValidated = true;
@@ -121,7 +201,16 @@ export default class FormController {
         if (!+value) error.push('Should be not empty');
 
         return error.join('<br>');
-      }
+      },
+
+      // city(value) {
+      //   let error = [];
+      //
+      //   let delivery = JSON.parse(sessionStorage.delivery);
+      //   delivery.city.forEach((obj) => {
+      //     if (obj.hasOwnProperty(value))
+      //   });
+      // }
     };
 
     arInput.forEach((input) => {
@@ -135,29 +224,33 @@ export default class FormController {
           isValidated = false;
         }
       }
+
+      if (input.name === 'delivery' && arInput.length === 1) {
+        self.changeDelivery(input);
+      }
     });
 
-    console.log('???', isValidated);
+    console.log(arInput);
 
     return isValidated;
-  }
-
-  render({$modal, data}) {
-    let self = this;
-
-    self.view.render($modal, data);
-
-
   }
 }
 
 function dataProcessing(data) {
+  console.log(data);
+
   let dataProcessed = {};
 
   data.forEach((item) => {
-    dataProcessed[item.name] = +item.value == item.value ? +item.value : item.value;
-    if (typeof dataProcessed[item.name] === 'string') {
-      let str = dataProcessed[item.name];
+
+    if (item.name === 'city') {
+      // debugger;
+      if (dataProcessed[item.name] === undefined) dataProcessed[item.name] = [];
+      dataProcessed[item.name].push(item.value);
+    } else if (+item.value == item.value) {
+      dataProcessed[item.name] = +item.value;
+    } else {
+      let str = item.value;
       str = str.replace(/<br>/gi, "\n");
       str = str.replace(/<p.*>/gi, "\n");
       str = str.replace(/<a.*href="(.*?)".*>(.*?)<\/a>/gi, " $2 (Link->$1) ");
@@ -165,8 +258,26 @@ function dataProcessing(data) {
       dataProcessed[item.name] = str;
     }
 
+    // dataProcessed[item.name] = +item.value == item.value ? +item.value : item.value;
+
   });
 
+  if (dataProcessed.delivery !== 'null') {
+    dataProcessed.delivery = {
+      country: dataProcessed.country,
+      city: dataProcessed.city,
+    }
+  } else {
+    dataProcessed.delivery = {
+      country: null,
+      city: [],
+    }
+  }
+
+  delete dataProcessed.city;
+  delete dataProcessed.country;
+
+  console.log('dskfsdfd', dataProcessed);
   return dataProcessed;
   // console.log(this.name + '=' + this.value);
 }

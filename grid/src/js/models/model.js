@@ -6,6 +6,7 @@ export function getProductList() {
 }
 
 export function getProductById(productId) {
+  console.log(productId);
   let endpointURL = getEndpointURL('get', productId);
   return getResponse(endpointURL);
 }
@@ -25,8 +26,6 @@ export function updateProduct(productId, data) {
   let endpointURL = getEndpointURL('update', productId);
   return getResponse(endpointURL, 'PUT', data);
 }
-
-// TODO ? вынести в отд файл
 
 function getResponse (endpointURL, type = 'GET', data = null) {
 

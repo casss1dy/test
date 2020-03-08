@@ -43,7 +43,7 @@ class ModalView {
     self.view = view;
   }
 
-  async show(productId) {
+  async show({productId}) {
 
     let self = this;
 
@@ -95,12 +95,14 @@ class ModalChange {
       self.view.toggle();
 
     } else {
+
+      self.view.toggle(true);
+
       eventEmitter.emit(RENDER_FORM, {
         $modal: self.view.$modal,
         data: {},
       });
 
-      self.view.toggle(true);
     }
   }
 }

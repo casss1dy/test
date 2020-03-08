@@ -53,7 +53,8 @@ export class View extends ModalView {
 
   template({email, count, price, delivery}) {
     let deliveryInfo;
-    if (!delivery || delivery.country === null && delivery.city === null) deliveryInfo = 'No'; //TODO see
+    if (!delivery || delivery.country === null || delivery.city === null) deliveryInfo = 'No'; //TODO see
+
     else if (Array.isArray(delivery.city))
       deliveryInfo = `${delivery.country} / ${delivery.city.join(', ')}`;
 

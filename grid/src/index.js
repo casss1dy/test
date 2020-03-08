@@ -38,6 +38,7 @@ $(() => {
 $(window).on('beforeunload', function(){
   delete sessionStorage.sort;
   delete sessionStorage.filter;
+  delete sessionStorage.delivery;
 });
 
 
