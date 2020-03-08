@@ -15,16 +15,23 @@ export default class FilterController {
       filter = this.stripTags(filter);
     }
 
-    console.log(filter);
-
     self.view.filterStr = filter;
     self.view.toggleResetBtn();
 
     eventEmitter.emit(RENDER, {filter: self.filter(filter)});
   }
 
-  stripTags(string) {
-    return string.replace(/(<([^>]+)>)/ig,"");
+  stripTags(str) {
+
+    str = str.trim();
+    str = str.replace(/<br>/gi, "\n");
+    str = str.replace(/<p.*>/gi, "\n");
+    str = str.replace(/<a.*href="(.*?)".*>(.*?)<\/a>/gi, " $2 (Link->$1) ");
+    str = str.replace(/<(?:.|\s)*?>/g, "");
+
+    str = str.trim();
+
+    return str;
   }
 
   filter(str) {

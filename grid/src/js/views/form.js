@@ -7,8 +7,6 @@ export default class FormView {
 
     $('body').on('click', '#saveProduct', () => self.triggerSaveProduct());
     $('body').on('input focusout', '#formChange', (e) => {
-      console.log(e.target.name);
-      console.log(e.type);
       const noFocusout = ['delivery', 'country', 'city'];
       if (e.type === 'focusout' && (noFocusout.includes(e.target.name))) e.stopImmediatePropagation();
       else self.triggerValidate(e)
@@ -112,9 +110,6 @@ export default class FormView {
         cityList[this.value] = this.checked;
       });
 
-      console.log(cityList);
-      console.log({cityList, country});
-
       return {cityList, country};
 
     } else if (selected === 'city') {
@@ -162,7 +157,6 @@ export default class FormView {
   // }
 
   template({id, name, email, count, price, delivery, deliveryTemplate}) {
-    console.log(delivery);
     let self = this;
 
     let hasDelivery;
@@ -238,7 +232,7 @@ export default class FormView {
             </div>
             
             <div class="col align-self-center">
-              <label class="invalid-message" for="price"></label>
+              <label class="invalid-message" for="city"></label>
             </div>
             
           </div>
@@ -265,7 +259,6 @@ export default class FormView {
 
     self.$formChange = $('#formChange');
 
-    console.log(input, error);
     // debugger;
     let $error = self.$formChange.find(`label[for=${input}]`);
     let $input = self.$formChange.find(`#${input}`);
@@ -277,8 +270,6 @@ export default class FormView {
   }
 
   toggleBtnDisable($btn, productId = null) {
-    console.log($btn);
-
     let isDisable = $btn.prop('disabled');
 
     $btn.closest('fieldset').prop('disabled', !isDisable);
@@ -295,7 +286,6 @@ export default class FormView {
 
     if (!self.$saveBtn) self.init();
     let data = self.$formChange.serializeArray();
-    console.log('arr', data);
 
     let product = self.$saveBtn.attr('data-product') ? self.$saveBtn.attr('data-product') : null;
 

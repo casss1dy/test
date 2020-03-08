@@ -16,7 +16,6 @@ export default class FormController {
 
   async addProduct({data, product}) {
 
-    console.log(product);
     let self = this;
 
     // if (!self.view.$saveBtn) self.view.init();
@@ -29,18 +28,14 @@ export default class FormController {
     }
 
     self.view.toggleBtnDisable(self.view.$saveBtn, product);
-    console.log(data);
     const dataProcessed = dataProcessing(data);
-    console.log(dataProcessed);
 
-    // return;
+    return;
 
     try {
       if (product) {
-        console.log('update');
         await updateProduct(product, JSON.stringify(dataProcessed));
       } else {
-        console.log('add');
         await addProduct(JSON.stringify(dataProcessed));
       }
     } catch (e) {
@@ -156,8 +151,6 @@ export default class FormController {
   }
 
   validate(arInput) {
-    
-    console.log(4538783758375, arInput );
 
     let self = this;
     let isValidated = true;
@@ -230,15 +223,11 @@ export default class FormController {
       }
     });
 
-    console.log(arInput);
-
     return isValidated;
   }
 }
 
 function dataProcessing(data) {
-  console.log(data);
-
   let dataProcessed = {};
 
   data.forEach((item) => {
@@ -250,7 +239,7 @@ function dataProcessing(data) {
     } else if (+item.value == item.value) {
       dataProcessed[item.name] = +item.value;
     } else {
-      let str = item.value;
+      let str = item.value.trim();
       str = str.replace(/<br>/gi, "\n");
       str = str.replace(/<p.*>/gi, "\n");
       str = str.replace(/<a.*href="(.*?)".*>(.*?)<\/a>/gi, " $2 (Link->$1) ");
@@ -277,8 +266,6 @@ function dataProcessing(data) {
   delete dataProcessed.city;
   delete dataProcessed.country;
 
-  console.log('dskfsdfd', dataProcessed);
   return dataProcessed;
-  // console.log(this.name + '=' + this.value);
 }
 

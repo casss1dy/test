@@ -60,10 +60,6 @@ export default class TableView {
 
     // $(this).find('button').prop('disabled', true);
 
-    console.log(e.target);
-    console.log('modal', modalId);
-    console.log(this.id);
-
     eventEmitter.emit(OPEN, {
       modalId: modalId,
       productId: id,
@@ -72,7 +68,6 @@ export default class TableView {
   }
 
   triggerSort() {
-    console.log(this);
     eventEmitter.emit(RENDER, {
       sort:  {
         field: this.dataset.field,

@@ -32,12 +32,22 @@ a {
   opacity: 0.5;
 }
 
+.page {
+  &-container {
+    max-width: 650px;
+  }
+}
+
 // table
 .table-controls {
   padding-top: 60px;
 }
 
 .table-products {
+
+  td:last-child, th:last-child {
+    text-align: center;
+  }
 
   .product {
     &:hover {
@@ -134,7 +144,7 @@ a {
   .btn-search-reset {
     display: none;
     margin-left: -32px;
-    color: red;
+    color: $cSortReset;
     padding: 5px 10px;
   }
 }

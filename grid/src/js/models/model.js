@@ -6,7 +6,6 @@ export function getProductList() {
 }
 
 export function getProductById(productId) {
-  console.log(productId);
   let endpointURL = getEndpointURL('get', productId);
   return getResponse(endpointURL);
 }
@@ -22,7 +21,6 @@ export function addProduct(data) {
 }
 
 export function updateProduct(productId, data) {
-  console.log(11111111, data);
   let endpointURL = getEndpointURL('update', productId);
   return getResponse(endpointURL, 'PUT', data);
 }
@@ -41,8 +39,6 @@ function getResponse (endpointURL, type = 'GET', data = null) {
     settings.contentType = 'application/json';
     settings.processData = false;
   }
-
-  console.log(settings);
 
   return ajax(settings);
 }

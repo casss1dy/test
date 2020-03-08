@@ -26,8 +26,6 @@ export default class ModalView {
 
       this.$modal.toggleClass('show');
       this.$modal.find('input').first().focus();
-
-      console.log(this.$modal);
     }
 
     isOpen() {

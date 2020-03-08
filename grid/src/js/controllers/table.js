@@ -54,8 +54,6 @@ export default class TableController {
     }
 
     this.view.render(data);
-
-    console.log(data);
   }
 
   sort(data, {field, oldDirection, direction, $icon}) {

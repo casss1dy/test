@@ -69,7 +69,6 @@ class ModalChange {
 
   async show({productId, productName}) {
     let self = this;
-    // console.log(product);
 
     if (productId) {
       let self = this;
@@ -114,7 +113,6 @@ class ModalDelete {
   }
 
   show(product) {
-    console.log(this);
 
     let self = this;
 
