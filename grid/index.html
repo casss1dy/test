@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+  <link rel="shortcut icon" type="image/ico" href="img/favicon.ico" />
+  <title>Product table</title>
+</head>
+<body>
+
+  <main class="page">
+    <div class="container page-container">
+
+      <div class="table-controls mb-5">
+        <div class="row justify-content-between">
+          <div class="col-6">
+            <form action="" class="form-search form-inline" id="filterForm">
+              <div class="form-group">
+                <input type="text" class="form-control input-search" name="search" placeholder="Search...">
+                <button type="button" class="btn btn-search-reset" id="resetBtn">
+                  <span aria-hidden="true">×</span>
+                </button>
+                <button type="button" class="btn btn-light btn-search" id="filterBtn">Go!</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="col-auto">
+            <button type="button" class="btn btn-success btn-add" id="showAddModal" data-modal="change">Add product</button>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table-products table table-hover" id="tableProducts">
+          <thead>
+            <tr>
+                <th class="sortable" data-field="name">Name
+                  <span class="sort sort-asc">
+                    <span></span><span>
+                    </span><span></span>
+                  </span>
+                </th>
+                <th class="sortable" data-field="price">Price
+                  <span class="sort sort-asc">
+                    <span></span><span>
+                    </span><span></span>
+                  </span>
+                </th>
+                <th>Action</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+    </div>
+  </main>
+
+  <div class="modal modal-main" id="change" data-action="change" tabindex="-1" aria-modal="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content"></div>
+    </div>
+  </div>
+
+  <div class="modal modal-main" id="delete" data-action="delete" tabindex="-1">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content"></div>
+    </div>
+  </div>
+
+  <div class="modal modal-main" id="view" data-action="view" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            <span class="product-name"></span>
+          </h5>
+          <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <table class="product-info table table-borderless table-sm"></table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light btn-close" data-dismiss="modal">Ok</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="spinner-loader d-none" id="spinnerLoader">
+    <div class="spinner-grow" role="status"></div>
+    <div class="spinner-grow" role="status"></div>
+    <div class="spinner-grow" role="status"></div>
+  </div>
+
+  <div class="alert alert-danger alert-main alert-dismissible" style="display: none;" role="alert" id="alert"></div>
+
+  <div class="modal-backdrop d-none" id="pageBackdrop"></div>
+
+  <!-- todo backdrop availible to click -->
+
+</body>
+</html>
